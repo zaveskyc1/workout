@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>☀️ Summer Workout 2026</title>
+<style>
+:root {
+  color-scheme: light;
+  --g: #D4500A;
+  --g-light: #FFF4EE;
+  --g-border: #FCCBA8;
+  --d: #1A7A38;
+  --d-light: #EAF7EF;
+  --d-border: #9FD9B2;
+  --track-bg: #F3EDFC;
+  --track-accent: #6B3FA0;
+  --bg: #F2F4F8;
+  --card: #FFFFFF;
+  --text: #111827;
+  --muted: #6B7280;
+  --border: #E5E7EB;
+  --hdr: #111827;
+  --done: #16A34A;
+  --ft-gold: #B45309;
+  --ft-light: #FFFBEB;
+  --ft-border: #FDE68A;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:48px;}
+
+.hdr{background:var(--hdr);color:#fff;padding:14px 16px 0;position:sticky;top:0;z-index:99;box-shadow:0 2px 12px rgba(0,0,0,.25);}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.hdr-title{font-size:17px;font-weight:800;letter-spacing:-.3px;}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;}
+.hdr-prog{text-align:right;}
+.hdr-prog-num{font-size:14px;font-weight:700;color:#FFB347;}
+.hdr-prog-lbl{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.4px;text-transform:uppercase;}
+.prog-wrap{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;margin-top:3px;width:80px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#FF9F43,#FF6B6B);border-radius:3px;transition:width .3s;}
+
+.tabs{display:flex;gap:2px;padding-bottom:0;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:1;min-width:40px;border:none;background:none;color:rgba(255,255,255,.4);font-size:12px;font-weight:700;padding:8px 4px 10px;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;text-align:center;}
+.tab.active{color:#FFB347;border-bottom-color:#FFB347;}
+.tab.today-tab:not(.active){color:rgba(255,255,255,.75);}
+.tab-dot{width:4px;height:4px;background:#FFB347;border-radius:50%;margin:2px auto 0;visibility:hidden;}
+.tab.today-tab .tab-dot{visibility:visible;}
+.tab.rest-tab{color:rgba(255,255,255,.25);}
+
+.content{padding:14px 14px 0;max-width:580px;margin:0 auto;}
+
+.rest-screen{text-align:center;padding:70px 20px;}
+.rest-screen .r-emoji{font-size:60px;}
+.rest-screen h2{font-size:26px;font-weight:800;margin-top:14px;}
+.rest-screen p{color:var(--muted);margin-top:8px;font-size:15px;line-height:1.5;}
+
+.day-summary{background:var(--hdr);color:#fff;border-radius:14px;padding:12px 16px;display:flex;justify-content:space-around;margin-bottom:14px;}
+.ds-stat{text-align:center;}
+.ds-val{font-size:22px;font-weight:800;}
+.ds-lbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-top:1px;}
+
+.session{margin-bottom:18px;}
+.sess-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.sess-label{font-size:15px;font-weight:800;}
+.pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;}
+.pill-time{background:var(--border);color:var(--muted);}
+.pill-track{background:var(--track-bg);color:var(--track-accent);}
+.pill-opt{background:#FFF9E6;color:#92600A;border:1px solid #FDE68A;}
+
+.kcard{background:var(--card);border-radius:16px;border:1px solid var(--border);overflow:hidden;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06);}
+.kcard-hdr{padding:12px 14px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.kcard-left{display:flex;align-items:center;gap:10px;}
+.kavatar{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.g-card .kavatar{background:var(--g-light);}
+.d-card .kavatar{background:var(--d-light);}
+.kname{font-size:15px;font-weight:800;}
+.g-card .kname{color:var(--g);}
+.d-card .kname{color:var(--d);}
+.ksub{font-size:11px;color:var(--muted);margin-top:1px;}
+.kprog{text-align:right;}
+.kprog-num{font-size:19px;font-weight:800;}
+.g-card .kprog-num{color:var(--g);}
+.d-card .kprog-num{color:var(--d);}
+.kprog-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+
+/* Shot counter */
+.shot-bar{padding:10px 14px;background:var(--g-light);border-bottom:1px solid var(--g-border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.shot-info{display:flex;align-items:baseline;gap:5px;flex:1;min-width:100px;}
+.shot-num{font-size:22px;font-weight:800;color:var(--g);}
+.shot-goal-txt{font-size:12px;color:var(--muted);}
+.shot-btns{display:flex;gap:4px;flex-wrap:wrap;}
+.sbtn{border:1.5px solid var(--g-border);background:#fff;color:var(--g);font-weight:700;font-size:12px;padding:5px 9px;border-radius:8px;cursor:pointer;min-height:34px;min-width:38px;transition:all .12s;}
+.sbtn:active{background:var(--g);color:#fff;transform:scale(.94);}
+.sbtn.rst{color:var(--muted);border-color:var(--border);font-size:11px;}
+.shot-done-badge{background:#D1FAE5;border:1px solid #6EE7B7;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;color:#065F46;}
+
+/* Free throw counter (gold) */
+.ft-bar{padding:10px 14px;background:var(--ft-light);border-bottom:1px solid var(--ft-border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.ft-info{display:flex;align-items:baseline;gap:5px;flex:1;min-width:100px;}
+.ft-num{font-size:22px;font-weight:800;color:var(--ft-gold);}
+.ft-goal-txt{font-size:12px;color:var(--muted);}
+.ft-btns{display:flex;gap:4px;flex-wrap:wrap;}
+.ftbtn{border:1.5px solid var(--ft-border);background:#fff;color:var(--ft-gold);font-weight:700;font-size:12px;padding:5px 9px;border-radius:8px;cursor:pointer;min-height:34px;min-width:38px;transition:all .12s;}
+.ftbtn:active{background:var(--ft-gold);color:#fff;transform:scale(.94);}
+.ftbtn.rst{color:var(--muted);border-color:var(--border);font-size:11px;}
+.ft-done-badge{background:#FEF3C7;border:1px solid #FCD34D;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;color:#92600A;}
+
+/* Lap counter */
+.lap-bar{padding:10px 14px;background:var(--d-light);border-bottom:1px solid var(--d-border);display:flex;align-items:center;gap:8px;}
+.lap-info{display:flex;align-items:baseline;gap:5px;flex:1;}
+.lap-num{font-size:22px;font-weight:800;color:var(--d);}
+.lap-goal-txt{font-size:12px;color:var(--muted);}
+.lbtn{border:1.5px solid var(--d-border);background:#fff;color:var(--d);font-weight:700;font-size:12px;padding:5px 12px;border-radius:8px;cursor:pointer;min-height:34px;transition:all .12s;}
+.lbtn:active{background:var(--d);color:#fff;transform:scale(.94);}
+.lbtn.rst{color:var(--muted);border-color:var(--border);font-size:11px;}
+.lap-done-badge{background:#D1FAE5;border:1px solid #6EE7B7;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;color:#065F46;}
+
+.checklist{padding:4px 0;}
+.ci{display:flex;align-items:flex-start;gap:11px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #F9FAFB;transition:background .1s;}
+.ci:last-child{border-bottom:none;}
+.ci:active{background:#F9FAFB;}
+.ci.done{opacity:.45;}
+/* FT finish row - gold highlight */
+.ci.ft-row{background:var(--ft-light);border-left:3px solid #FCD34D;}
+.ci.ft-row.done{opacity:.45;}
+.cbox{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s;}
+.ci.done .cbox{background:var(--done);border-color:var(--done);color:#fff;}
+.ci.ft-row .cbox{border-color:#FCD34D;}
+.ctxt{flex:1;}
+.clabel{font-size:14px;font-weight:600;line-height:1.3;}
+.ci.done .clabel{text-decoration:line-through;color:var(--muted);}
+.cdetail{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45;}
+.cmeta{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+.ctag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:.2px;}
+.g-card .ctag{background:var(--g-light);color:var(--g);}
+.d-card .ctag{background:var(--d-light);color:var(--d);}
+.ft-tag{background:var(--ft-light);color:var(--ft-gold);}
+
+.track-label{background:var(--track-bg);border:1px solid #DDD6FE;border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--track-accent);font-weight:600;}
+
+.tip-box{background:#EEF2FF;border:1px solid #C7D2FE;border-radius:12px;padding:12px 14px;margin:0 14px 16px;font-size:12px;color:#3730A3;line-height:1.6;}
+.tip-box strong{font-weight:700;}
+
+/* VIEW TOGGLE */
+.view-toggle-wrap{padding:0 16px 12px;display:flex;gap:6px;}
+.vtbtn{flex:1;padding:8px 10px;border-radius:10px;border:2px solid transparent;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
+.vtbtn-g{background:var(--g);color:#fff;border-color:var(--g);}
+.vtbtn-g.inactive{background:rgba(255,255,255,.08);color:rgba(255,255,255,.45);border-color:rgba(255,255,255,.12);}
+.vtbtn-d{background:var(--d);color:#fff;border-color:var(--d);}
+.vtbtn-d.inactive{background:rgba(255,255,255,.08);color:rgba(255,255,255,.45);border-color:rgba(255,255,255,.12);}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div>
+      <div class="hdr-title">☀️ Summer Workout 2026</div>
+      <div class="hdr-sub" id="hdr-sub">🏀 Grayson (10) &nbsp;·&nbsp; ⚽ Devin (6)</div>
+    </div>
+    <div class="hdr-prog">
+      <div class="hdr-prog-num" id="hdr-pct">0%</div>
+      <div class="hdr-prog-lbl">Today</div>
+      <div class="prog-wrap"><div class="prog-fill" id="hdr-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="view-toggle-wrap">
+    <button class="vtbtn vtbtn-g" id="vt-g" onclick="setView('grayson')">🏀 Grayson Drills</button>
+    <button class="vtbtn vtbtn-d inactive" id="vt-d" onclick="setView('devin')">⚽ Devin Drills</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div id="main"></div>
+
+<script>
+const DAYS = [
+  { key:'monday',    short:'Mon', label:'Monday' },
+  { key:'tuesday',   short:'Tue', label:'Tuesday' },
+  { key:'wednesday', short:'Wed', label:'Wednesday' },
+  { key:'thursday',  short:'Thu', label:'Thursday' },
+  { key:'friday',    short:'Fri', label:'Friday' },
+  { key:'saturday',  short:'Sat', label:'Saturday' },
+  { key:'sunday',    short:'Sun', label:'Sunday', rest:true },
+];
+
+// ── WORKOUT DATA ──────────────────────────────
+
+// ── mason.elite video drills (mid-point → end of "Basic 300 Make Shooting Workout")
+const MASON_DRILLS = [
+  {
+    label:'5 Spots 10 Makes — 1 Dribble Pull Up',
+    detail:'5 spots: L corner · L wing · Top of key · R wing · R corner. Catch, one hard dribble (left OR right), rise up immediately — 10 makes per spot. No stopping between spots.',
+    tags:['50 makes','~10 min'],
+  },
+  {
+    label:'2 Dribble Escape — 50 Makes',
+    detail:'Catch the ball in a live-ball stance. 2 hard dribbles to create separation from the imaginary tight defender, then rise up for the pull-up. Attack both directions equally.',
+    tags:['50 makes','~10 min'],
+  },
+  {
+    label:'Flip Out 1–2 Square Up — 50 Makes',
+    detail:'Run a hard cut to your spot (flip out), land with 1-2 footwork to square your hips to the basket, and fire. Simulates coming off a screen or cutting to space. Both sides.',
+    tags:['50 makes','~10 min'],
+  },
+];
+
+// Grayson morning shooting — FT always LAST (50 makes)
+// Drills 0-4 rotate through the 3 mason.elite drills Mon–Fri
+function gMorning(v) {
+  // Mon = drill 0, Tue = drill 1, Wed = drill 2, Thu = drill 0 again (beat Mon pace), Fri = competition
+  const masondrill = v < 4 ? MASON_DRILLS[v % 3] : null;
+  const featuredDrill = v < 4
+    ? { label: masondrill.label, detail: masondrill.detail + '', tags: masondrill.tags }
+    : { label:'Competition Day 🏆 — All 3 Drills', detail:'Back to back — track your make % on each:\n• 5 Spots 10 Makes — 1 Dribble Pull Up\n• 2 Dribble Escape — 50 Makes\n• Flip Out 1–2 Square Up — 50 Makes', tags:['150 makes','30 min'] };
+
+  return {
+    title: 'Shooting Session ' + ['A','B','C','D','E'][v],
+    shotGoal: 220,
+    blocks: [
+      { label:'Warmup Layups', detail:'Alternate sides under basket — soft touch, both hands', tags:['20 makes','4 min'] },
+      featuredDrill,
+      { label:'Catch & Shoot Circuit', detail:'5 spots: L corner · L wing · Top of key · R wing · R corner — game-speed catches, land balanced every shot', tags:['50 makes','10 min'] },
+
+      { label:'Floaters', detail:'Drive from wing or elbow — soft floater finish in the paint, both sides', tags:['30 makes','8 min'] },
+      { label:'Pull-up Attack — Both Elbows', detail:'1–2 hard dribbles from the top, pull up from the elbow or mid-range. Read the angle and attack the open side.', tags:['20 makes','5 min'] },
+      { label:'🎯 Free Throws — FINISH STRONG', detail:'Full routine every shot. Same arc, same release. No rushing.', tags:['50 makes','8 min'], isFT: true },
+    ]
+  };
+}
+
+// Grayson evening court — FT always LAST (50 makes), no cool-down shooting
+// Each night features a different mason.elite drill as the headliner
+function gEvening(f) {
+  // f=0 Mon, f=1 Wed, f=2 Fri
+  const focus = ['Foundation — perfect form on every rep','Speed — same drills, faster tempo','Competition — track your make % and beat Mon/Wed'][f];
+  const featured = MASON_DRILLS[f % 3];
+  return {
+    title: 'In-Game Intensity Drills',
+    note: '🎯 ' + focus,
+    shotGoal: 200,
+    blocks: [
+      { label:'Mikan Drill Warmup', detail:'Alternate sides under basket continuously — no stopping, soft touch', tags:['20 makes','3 min'] },
+      { label: featured.label + ' ★ Featured', detail: featured.detail + ' Evening version: push max game speed.', tags: featured.tags },
+      { label:'Ball Screen Simulation', detail:'Hard dribble to elbow as if peeling off a screen — shoot the mid-range every time', tags:['40 makes','8 min'] },
+      { label:'Drive & Kick Simulation', detail:'Aggressive drive → kick to corner → relocate → game-speed catch → shoot', tags:['30 makes','7 min'] },
+      { label:'1-on-1 vs Dad 💪', detail:'Full defensive pressure. Goal: hold off bigger defenders, protect the ball, create space for your shot', tags:['25+ makes','14 min'] },
+      { label:'🎯 Free Throws — FINISH STRONG', detail:'Full routine every shot. Simulate end-of-game pressure — game on the line.', tags:['50 makes','10 min'], isFT: true },
+    ]
+  };
+}
+
+// Devin soccer — one flexible session, do whenever (morning or evening)
+const devinSoccer = {
+  title: 'Soccer Fun — Do Whenever!',
+  note: '⚽ Morning or evening, your call',
+  blocks: [
+    { label:'🚦 Red Light / Green Light', detail:'"Green light" = dribble forward. "Red light!" = stop the ball with your foot on top. 3 rounds!', tags:['4 min'] },
+    { label:'Cone Dribbling Maze', detail:'6 cones in a zigzag — weave around each one without knocking them over. Try to go faster every round! 4 rounds.', tags:['4 min'] },
+    { label:'Soccer Bowling 🎳', detail:'Stack 3–4 cones in a tower. Kick the ball to knock them down from 10 feet away. Reset and go again — 10 kicks total!', tags:['4 min'] },
+    { label:'Toe Tap Fast Feet', detail:'Put one foot on top of the ball, switch feet as fast as you can — like running in place on the ball! Count to 30.', tags:['3 min'] },
+    { label:'🎯 Kick at a Target', detail:'Tape or draw an X on the wall or fence. Kick from 10 feet — how many times can you hit it in 15 kicks?', tags:['5 min'] },
+    { label:'New Move of the Week', detail:'This week\'s move: Step-Over — swing one foot over the ball to fake, then go the other way. Try 10 times each side!', tags:['5 min'] },
+    { label:'Kick & Chase', detail:'Kick the ball as far as you can, then sprint after it! Trap it with your foot when you catch up. 6 kicks each foot.', tags:['4 min'] },
+  ]
+};
+
+// Grayson track (75-min, Tue/Thu) — morning already did shooting so NO FT here
+const gTrack75 = {
+  title: 'Ball Handling & Agility',
+  blocks: [
+    { label:'Dynamic Warmup', detail:'High knees · Butt kicks · Leg swings front & side · Arm circles · Ankle hops', tags:['5 min'] },
+    { label:'Lap Circuit — Set 1', detail:'2 laps: Dribble THROUGH LEGS on every TURN · Sprint straight-aways with ball in hand', tags:['2 laps','12 min'] },
+    { label:'Ladder Drills — Round 1', detail:'5 reps each:\n① Crossover\n② Through the legs, behind the back\n③ Double through legs\n④ Double behind the back\n⑤ Crossover, through legs & behind back combo', tags:['5 reps each','10 min'] },
+    { label:'Lap Circuit — Set 2', detail:'2 laps — push harder than Set 1, keep the ball tight', tags:['2 laps','12 min'] },
+    { label:'Zig Zag Pressure Dribble', detail:'4 × 100m zig zag between two lanes — dad applies active hand pressure. Hold strong!', tags:['4 reps','12 min'] },
+    { label:'Cool Down Stretch', detail:'Quad · Hamstring · Hip flexor · Calf — hold 30 sec each side', tags:['5 min'] },
+  ]
+};
+
+// Grayson SATURDAY track (2 hrs) — replace old extended drills with better ones
+const gTrackSat = {
+  title: 'Ball Handling & Agility — Extended',
+  blocks: [
+    { label:'Dynamic Warmup', detail:'High knees · Butt kicks · Leg swings · Arm circles · Ankle hops', tags:['5 min'] },
+    { label:'Lap Circuit — Set 1', detail:'2 laps: Dribble through legs on turns · Sprint straight-aways with ball in hand', tags:['2 laps','12 min'] },
+    { label:'Ladder Drills — Round 1', detail:'5 reps each:\n① Crossover\n② Through the legs, behind the back\n③ Double through legs\n④ Double behind the back\n⑤ Crossover, through legs & behind back combo', tags:['5 reps each','12 min'] },
+    { label:'Lap Circuit — Set 2', detail:'2 laps — push harder, keep ball moving', tags:['2 laps','12 min'] },
+    { label:'Zig Zag Pressure Dribble', detail:'4 × 100m zig zag with dad applying active defensive pressure', tags:['12 min'] },
+    { label:'Two-Ball Dribbling Circuit 🆕', detail:'Dribble TWO balls at once — 3 reps: straight jog down the straight, alternating (one high/one low), simultaneous crossovers. Builds both hands independently.', tags:['10 min'] },
+    { label:'Weak-Hand Lap Challenge 🆕', detail:'One full lap around the track — non-dominant hand ONLY. No switching allowed. Builds your off hand for real game situations.', tags:['1 lap','7 min'] },
+    { label:'Cool Down Stretch', detail:'Full body: quad, hamstring, hip flexor, calf, shoulder — 30 sec each', tags:['6 min'] },
+  ]
+};
+
+// Grayson track morning shooting (Tue/Thu — more FTs since no evening court)
+function gMorningTrackDay(v) {
+  const base = gMorning(v);
+  // Replace last FT block with higher count for track days
+  const blocks = base.blocks.slice(0, -1); // remove FT block
+  blocks.push({ label:'🎯 Free Throws — FINISH STRONG', detail:'Full routine every shot. No evening court today — hit close to 100 here.', tags:['80 makes','8 min'], isFT: true });
+  return { ...base, blocks };
+}
+
+// Devin track (75-min, Tue/Thu)
+const dTrack75 = {
+  title: 'Endurance & Agility',
+  lapGoal: 8,
+  blocks: [
+    { label:'Laps 1–2 🏃', detail:'Free run — own pace, no pressure. Just go!', tags:['2 laps','~12 min'] },
+    { label:'Agility Block 1', detail:'Ladder: alternating feet each square ×2 reps\nLadder: bunny hops in squares ×2\nCone sprint & back ×3', tags:['8 min'] },
+    { label:'Laps 3–4 🏃', detail:'Keep running — try to match or beat first pace', tags:['2 laps','~12 min'] },
+    { label:'Agility Block 2', detail:'Ladder: sideways defensive slides ×2 each way\nLadder: high-knee walk ×2\n"Freeze!" sprint bursts ×3 (sprint on go, freeze on stop)', tags:['8 min'] },
+    { label:'Laps 5–6 🏃', detail:'More than halfway! Keep going!', tags:['2 laps','~12 min'] },
+    { label:'Agility Block 3', detail:'Cone race: sprint to cone, touch it, sprint back ×5\nZigzag sprint: run between 3 cones as fast as possible ×4 rounds', tags:['8 min'] },
+    { label:'Laps 7–8 🏃', detail:'Final push — see if you can finish faster than Laps 1–2!', tags:['2 laps','~12 min'] },
+    { label:'Cool Down', detail:'Easy walk + light leg shake-out + stretch', tags:['3 min'] },
+  ]
+};
+
+// Devin Saturday track (extended 2hrs)
+const dTrackSat = {
+  title: 'Endurance & Agility — Extended',
+  lapGoal: 8,
+  blocks: [
+    { label:'Laps 1–2 🏃', detail:'Easy start — warm up the legs, find your rhythm', tags:['2 laps','~12 min'] },
+    { label:'Agility Block 1', detail:'Alternating feet ×2 · Bunny hops ×2 · Cone sprint ×3', tags:['10 min'] },
+    { label:'Laps 3–4 🏃', detail:'Keep running — settle into your pace', tags:['2 laps','~12 min'] },
+    { label:'Agility Block 2', detail:'Sideways slides ×2 each way · High-knee ladder ×2 · Freeze sprints ×3', tags:['10 min'] },
+    { label:'Laps 5–6 🏃', detail:'Halfway done — push through!', tags:['2 laps','~12 min'] },
+    { label:'Agility Block 3', detail:'Cone race: sprint to cone, touch, sprint back ×5\nZigzag sprint through 3 cones ×4 rounds', tags:['10 min'] },
+    { label:'Laps 7–8 🏃', detail:'Last 2 laps — finish strong! Sprint the final straight!', tags:['2 laps','~12 min'] },
+    { label:'Mini Obstacle Course 🆕', detail:'Set up cones + ladder in a challenge course — run through it 3 times and try to beat your time!', tags:['8 min'] },
+    { label:'Cool Down', detail:'Walk a lap easy + full leg stretch routine', tags:['5 min'] },
+  ]
+};
+
+// ── SCHEDULE ─────────────────────────────────
+const schedule = {
+  monday: [
+    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
+      grayson: gMorning(0), devin: devinSoccer },
+    { id:'eve',  label:'🌆 Evening', time:'5:00 – 6:15pm', location:'Home Court',
+      grayson: gEvening(0) },
+  ],
+  tuesday: [
+    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
+      grayson: gMorningTrackDay(1) },
+    { id:'eve',  label:'🏃 Evening Workout', time:'', location:'Local Track', isTrack:true,
+      grayson: gTrack75, devin: dTrack75 },
+  ],
+  wednesday: [
+    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
+      grayson: gMorning(2), devin: devinSoccer },
+    { id:'eve',  label:'🌆 Evening', time:'5:00 – 6:15pm', location:'Home Court',
+      grayson: gEvening(1) },
+  ],
+  thursday: [
+    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
+      grayson: gMorningTrackDay(3) },
+    { id:'eve',  label:'🏃 Evening Workout', time:'', location:'Local Track', isTrack:true,
+      grayson: gTrack75, devin: dTrack75 },
+  ],
+  friday: [
+    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
+      grayson: gMorning(4), devin: devinSoccer },
+    { id:'eve',  label:'🌆 Evening (Optional)', time:'5:00 – 6:15pm', location:'Home Court', optional:true,
+      grayson: gEvening(2) },
+  ],
+  saturday: [
+    { id:'morn', label:'☀️ Morning', time:'', location:'Local Track', isTrack:true,
+      grayson: gTrackSat, devin: dTrackSat },
+  ],
+};
+
+// ── STATE ─────────────────────────────────────
+const state = { day:0, checks:{}, shots:{}, laps:{}, fts:{}, view:'grayson' }; // view: 'grayson' | 'both'
+
+function getTodayIdx() {
+  const d = new Date().getDay();
+  return d === 0 ? 6 : d - 1;
+}
+
+// ── RENDER ───────────────────────────────────
+function render() {
+  renderTabs();
+  renderMain();
+  updateHeaderProg();
+}
+
+function renderTabs() {
+  const today = getTodayIdx();
+  document.getElementById('tabs').innerHTML = DAYS.map((d,i) => {
+    let c = 'tab';
+    if (i === state.day) c += ' active';
+    if (i === today) c += ' today-tab';
+    if (d.rest) c += ' rest-tab';
+    return `<button class="${c}" onclick="switchDay(${i})">${d.short}<div class="tab-dot"></div></button>`;
+  }).join('');
+}
+
+function renderMain() {
+  const day = DAYS[state.day];
+  const el = document.getElementById('main');
+  const gOnly = state.view === 'grayson';
+  const dOnly = state.view === 'devin';
+
+  // Update toggle button styles
+  const vtG = document.getElementById('vt-g');
+  const vtD = document.getElementById('vt-d');
+  const hdrSub = document.getElementById('hdr-sub');
+  if (vtG) vtG.className = 'vtbtn vtbtn-g' + (gOnly ? '' : ' inactive');
+  if (vtD) vtD.className = 'vtbtn vtbtn-d' + (dOnly ? '' : ' inactive');
+  if (hdrSub) hdrSub.innerHTML = gOnly
+    ? '🏀 <b style="color:#FFB347">Grayson\'s Drills</b>'
+    : '⚽ <b style="color:#4ADE80">Devin\'s Drills</b>';
+
+  if (day.rest) {
+    el.innerHTML = `<div class="rest-screen"><div class="r-emoji">😴</div><h2>Rest Day</h2><p>Recovery is where the gains happen.<br>Hydrate, sleep well, come back strong tomorrow.</p></div>`;
+    return;
+  }
+
+  const sessions = schedule[day.key] || [];
+
+  // Block counts — only count visible kids
+  const totalBlocks = sessions.reduce((n,s) => {
+    let t = (!dOnly ? s.grayson?.blocks?.length || 0 : 0);
+    if (!gOnly) t += s.devin?.blocks?.length || 0;
+    return n + t;
+  }, 0);
+  const doneBlocks = countDone(sessions, day.key, gOnly, dOnly);
+
+  const totalShots   = sessions.reduce((n,s)=>n+(state.shots[sk(day.key,s.id,'grayson')]||0),0);
+  const totalShotGoal= sessions.reduce((n,s)=>n+(s.grayson?.shotGoal||0),0);
+  const totalFTs     = sessions.reduce((n,s)=>n+(state.fts[ftk(day.key,s.id,'grayson')]||0),0);
+  const totalFTGoal  = sessions.reduce((n,s)=>n+getFTGoal(s.grayson),0);
+  const totalLaps    = sessions.reduce((n,s)=>n+(state.laps[lk(day.key,s.id,'devin')]||0),0);
+  const totalLapGoal = sessions.reduce((n,s)=>n+(s.devin?.lapGoal||0),0);
+
+  let html = `<div class="content">`;
+
+  html += `<div class="day-summary">
+    <div class="ds-stat"><div class="ds-val">${doneBlocks}/${totalBlocks}</div><div class="ds-lbl">Done</div></div>
+    ${(totalShotGoal && !dOnly) ? `<div class="ds-stat"><div class="ds-val" style="color:#FFB347">${totalShots}</div><div class="ds-lbl">🏀 Shots</div></div>` : ''}
+    ${(totalFTGoal && !dOnly) ? `<div class="ds-stat"><div class="ds-val" style="color:#FCD34D">${totalFTs}/${totalFTGoal}</div><div class="ds-lbl">🎯 FTs</div></div>` : ''}
+    ${(!gOnly && totalLapGoal) ? `<div class="ds-stat"><div class="ds-val" style="color:#6EE7B7">${totalLaps}/${totalLapGoal}</div><div class="ds-lbl">⚽ Laps</div></div>` : ''}
+  </div>`;
+
+  for (const sess of sessions) {
+    html += `<div class="session">`;
+    html += `<div class="sess-hdr">
+      <span class="sess-label">${sess.label}</span>
+      ${sess.time ? `<span class="pill pill-time">${sess.time}</span>` : ''}
+      ${sess.isTrack ? `<span class="pill pill-track">📍 Track</span>` : ''}
+      ${sess.optional ? `<span class="pill pill-opt">Optional</span>` : ''}
+    </div>`;
+    if (sess.isTrack) {
+      html += `<div class="track-label">📍 ${sess.location} &nbsp;·&nbsp; Bring: basketball · cones · agility ladder</div>`;
+    }
+    if (!dOnly) html += renderCard(day.key, sess, 'grayson', sess.grayson, 'g-card', '🏀', 'Grayson', '10 yrs · Basketball');
+    if (!gOnly && sess.devin) html += renderCard(day.key, sess, 'devin', sess.devin, 'd-card', '⚽', 'Devin', '6 yrs · Soccer');
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+
+  el.innerHTML = html;
+}
+
+function getFTGoal(kidData) {
+  if (!kidData?.blocks) return 0;
+  const ftBlock = kidData.blocks.find(b => b.isFT);
+  if (!ftBlock) return 0;
+  const tag = ftBlock.tags?.find(t => t.includes('makes'));
+  if (!tag) return 0;
+  return parseInt(tag) || 0;
+}
+
+function renderCard(dayKey, sess, kidKey, data, cls, emoji, name, sub) {
+  const blocks = data?.blocks || [];
+  const done = blocks.filter((_,i) => state.checks[ck(dayKey,sess.id,kidKey,i)]).length;
+  const pct = blocks.length ? Math.round(done/blocks.length*100) : 0;
+
+  let h = `<div class="kcard ${cls}">`;
+  h += `<div class="kcard-hdr">
+    <div class="kcard-left">
+      <div class="kavatar">${emoji}</div>
+      <div><div class="kname">${name}</div><div class="ksub">${data?.title||''}${data?.note ? ' — '+data.note : ''}</div></div>
+    </div>
+    <div class="kprog"><div class="kprog-num">${pct}%</div><div class="kprog-lbl">Done</div></div>
+  </div>`;
+
+  // Shot counter (Grayson, non-FT shots)
+  if (kidKey === 'grayson' && data?.shotGoal) {
+    const key = sk(dayKey, sess.id, kidKey);
+    const count = state.shots[key] || 0;
+    const met = count >= data.shotGoal;
+    h += `<div class="shot-bar">
+      <div class="shot-info"><span class="shot-num" id="sn-${key}">${count}</span><span class="shot-goal-txt">/ ${data.shotGoal} made</span></div>
+      <div class="shot-btns">
+        ${met ? `<span class="shot-done-badge">🎉 Goal!</span>` : ''}
+        <button class="sbtn" onclick="addShots('${key}',5,${data.shotGoal})">+5</button>
+        <button class="sbtn" onclick="addShots('${key}',10,${data.shotGoal})">+10</button>
+        <button class="sbtn" onclick="addShots('${key}',25,${data.shotGoal})">+25</button>
+        <button class="sbtn rst" onclick="addShots('${key}',-999,${data.shotGoal})">↺</button>
+      </div>
+    </div>`;
+
+    // FT counter (separate, gold)
+    const ftGoal = getFTGoal(data);
+    if (ftGoal > 0) {
+      const fkey = ftk(dayKey, sess.id, kidKey);
+      const fcount = state.fts[fkey] || 0;
+      const fmet = fcount >= ftGoal;
+      h += `<div class="ft-bar">
+        <div class="ft-info"><span class="ft-num" id="ft-${fkey}">${fcount}</span><span class="ft-goal-txt">/ ${ftGoal} FT makes</span></div>
+        <div class="ft-btns">
+          ${fmet ? `<span class="ft-done-badge">🎯 ${ftGoal} Done!</span>` : ''}
+          <button class="ftbtn" onclick="addFTs('${fkey}',1,${ftGoal})">+1</button>
+          <button class="ftbtn" onclick="addFTs('${fkey}',5,${ftGoal})">+5</button>
+          <button class="ftbtn" onclick="addFTs('${fkey}',10,${ftGoal})">+10</button>
+          <button class="ftbtn rst" onclick="addFTs('${fkey}',-999,${ftGoal})">↺</button>
+        </div>
+      </div>`;
+    }
+  }
+
+  // Lap counter
+  if (kidKey === 'devin' && data?.lapGoal) {
+    const key = lk(dayKey, sess.id, kidKey);
+    const count = state.laps[key] || 0;
+    const met = count >= data.lapGoal;
+    h += `<div class="lap-bar">
+      <div class="lap-info"><span class="lap-num" id="ln-${key}">${count}</span><span class="lap-goal-txt">/ ${data.lapGoal} laps</span></div>
+      ${met ? `<span class="lap-done-badge">🎉 All 8!</span>` : `<button class="lbtn" onclick="addLap('${key}',${data.lapGoal})">+ Lap</button>`}
+      <button class="lbtn rst" onclick="resetLap('${key}')">↺</button>
+    </div>`;
+  }
+
+  // Checklist
+  h += `<div class="checklist">`;
+  for (let i = 0; i < blocks.length; i++) {
+    const b = blocks[i];
+    const key = ck(dayKey, sess.id, kidKey, i);
+    const isDone = !!state.checks[key];
+    const isFT = !!b.isFT;
+    const rowCls = `ci${isDone?' done':''}${isFT?' ft-row':''}`;
+    const tagHtml = b.tags?.length
+      ? `<div class="cmeta">${b.tags.map(t=>`<span class="ctag${isFT?' ft-tag':''}">${t}</span>`).join('')}</div>`
+      : '';
+    const makesTag = b.tags?.find(t => /^\d+\s+makes/.test(t));
+    const autoMakes = makesTag ? parseInt(makesTag) : 0;
+    const autoShotKey = isFT ? ftk(dayKey,sess.id,kidKey) : sk(dayKey,sess.id,kidKey);
+    h += `<div class="${rowCls}" onclick="toggleCheck('${key}',${autoMakes},'${autoShotKey}',${isFT?1:0})">
+      <div class="cbox">${isDone?'✓':''}</div>
+      <div class="ctxt">
+        <div class="clabel">${b.label}</div>
+        ${b.detail ? `<div class="cdetail">${b.detail.replace(/\n/g,'<br>')}</div>` : ''}
+        ${tagHtml}
+      </div>
+    </div>`;
+  }
+  h += `</div></div>`;
+  return h;
+}
+
+// ── KEYS ─────────────────────────────────────
+function ck(d,s,k,i)  { return `${d}-${s}-${k}-${i}`; }
+function sk(d,s,k)    { return `${d}-${s}-${k}-shots`; }
+function ftk(d,s,k)   { return `${d}-${s}-${k}-fts`; }
+function lk(d,s,k)    { return `${d}-${s}-${k}-laps`; }
+
+function countDone(sessions, dayKey, gOnly, dOnly) {
+  let n = 0;
+  for (const s of sessions) {
+    if (!dOnly) for (let i=0;i<(s.grayson?.blocks?.length||0);i++) if (state.checks[ck(dayKey,s.id,'grayson',i)]) n++;
+    if (!gOnly) for (let i=0;i<(s.devin?.blocks?.length||0);i++) if (state.checks[ck(dayKey,s.id,'devin',i)]) n++;
+  }
+  return n;
+}
+
+function updateHeaderProg() {
+  const day = DAYS[state.day];
+  if (day.rest) { document.getElementById('hdr-pct').textContent='😴'; document.getElementById('hdr-bar').style.width='0%'; return; }
+  const sessions = schedule[day.key]||[];
+  const gOnly = state.view === 'grayson';
+  const dOnly = state.view === 'devin';
+  const total = sessions.reduce((n,s) => {
+    let t = (!dOnly ? s.grayson?.blocks?.length||0 : 0);
+    if (!gOnly) t += s.devin?.blocks?.length||0;
+    return n+t;
+  }, 0);
+  const done = countDone(sessions, day.key, gOnly, dOnly);
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('hdr-pct').textContent = pct+'%';
+  document.getElementById('hdr-bar').style.width = pct+'%';
+}
+
+// ── INTERACTIONS ─────────────────────────────
+function setView(v) { state.view=v; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function switchDay(i) { state.day=i; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function toggleCheck(k, makes, shotKey, isFT) {
+  const wasChecked = state.checks[k];
+  state.checks[k] = !wasChecked;
+  if (makes && shotKey) {
+    const delta = wasChecked ? -makes : makes;
+    if (isFT) { state.fts[shotKey] = Math.max(0,(state.fts[shotKey]||0)+delta); }
+    else       { state.shots[shotKey] = Math.max(0,(state.shots[shotKey]||0)+delta); }
+  }
+  render();
+}
+function addShots(k,n,goal) { if(n===-999){state.shots[k]=0;}else{state.shots[k]=Math.max(0,(state.shots[k]||0)+n);} render(); }
+function addFTs(k,n,goal) { if(n===-999){state.fts[k]=0;}else{state.fts[k]=Math.max(0,(state.fts[k]||0)+n);} render(); }
+function addLap(k,goal) { state.laps[k]=Math.min((state.laps[k]||0)+1,goal); render(); }
+function resetLap(k) { state.laps[k]=0; render(); }
+
+// ── INIT ─────────────────────────────────────
+state.day = getTodayIdx();
+try {
+  render();
+} catch(e) {
+  document.getElementById('main').innerHTML =
+    `<div style="padding:24px;color:#DC2626;font-family:monospace;font-size:13px;background:#FEF2F2;margin:16px;border-radius:12px;">
+      <strong>Render error:</strong><br>${e.message}<br><pre>${e.stack}</pre>
+    </div>`;
+}
+</script>
+</body>
+</html>
