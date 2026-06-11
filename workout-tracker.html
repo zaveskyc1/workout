@@ -194,6 +194,68 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .bdg-modal-status.earned{background:#D1FAE5;color:#065F46;}
 .bdg-modal-how{font-size:15px;color:#374151;line-height:1.6;margin-bottom:20px;}
 .bdg-modal-btn{background:var(--hdr);color:#fff;border:none;border-radius:12px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+
+/* ── CONFETTI ─────────────────────────────────────────── */
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:2000;display:none;}
+
+/* ── LEVEL-UP MODAL ───────────────────────────────────── */
+#lvlup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:2001;display:none;align-items:center;justify-content:center;}
+#lvlup-overlay.show{display:flex;}
+.lvlup-box{background:#1F2937;border-radius:24px;padding:40px 28px;text-align:center;max-width:300px;width:90%;border:2px solid #FFB347;animation:lvlup-pop .4s cubic-bezier(.17,.67,.3,1.5);}
+@keyframes lvlup-pop{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+.lvlup-prefix{font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#FFB347;margin-bottom:8px;}
+.lvlup-main-emoji{font-size:72px;display:block;margin:10px 0;animation:lvl-bounce .8s ease infinite alternate;}
+@keyframes lvl-bounce{0%{transform:scale(1)}100%{transform:scale(1.18)}}
+.lvlup-title{font-size:32px;font-weight:900;color:#fff;margin-bottom:4px;}
+.lvlup-sub{font-size:14px;color:rgba(255,255,255,.55);margin-bottom:28px;line-height:1.5;}
+.lvlup-cta{background:linear-gradient(135deg,#FFB347,#F97316);color:#fff;border:none;border-radius:14px;padding:16px 32px;font-size:17px;font-weight:900;cursor:pointer;width:100%;letter-spacing:.5px;}
+
+/* ── SESSION COMPLETE MODAL ───────────────────────────── */
+#sess-overlay{position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:2001;display:none;align-items:center;justify-content:center;}
+#sess-overlay.show{display:flex;}
+.sess-box{background:#fff;border-radius:24px;padding:32px 24px;text-align:center;max-width:300px;width:90%;animation:lvlup-pop .35s cubic-bezier(.17,.67,.3,1.5);}
+.sess-box-icon{font-size:56px;margin-bottom:6px;}
+.sess-box-title{font-size:20px;font-weight:900;color:#111827;margin-bottom:4px;}
+.sess-box-xp{font-size:44px;font-weight:900;color:#F59E0B;margin:6px 0;}
+.sess-box-xp-lbl{font-size:13px;color:#6B7280;margin-bottom:20px;}
+.sess-box-btn{background:#111827;color:#fff;border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:800;cursor:pointer;width:100%;}
+
+/* ── NEW RECORD BANNER ────────────────────────────────── */
+.new-rec-banner{background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;border-radius:12px;padding:11px 14px;margin:0 14px 10px;display:flex;align-items:center;gap:10px;animation:rec-pulse 1.4s ease-in-out infinite;}
+@keyframes rec-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+.new-rec-flame{font-size:26px;}
+.new-rec-txt{font-size:14px;font-weight:900;}
+.new-rec-sub{font-size:11px;opacity:.85;margin-top:1px;}
+
+/* ── BADGE PROGRESS HINT ──────────────────────────────── */
+.bdg-prog{font-size:9px;font-weight:700;color:rgba(255,255,255,.45);margin-top:3px;line-height:1.2;background:rgba(255,255,255,.07);border-radius:4px;padding:2px 4px;}
+
+/* ── DAILY CHALLENGE CARD ─────────────────────────────── */
+.challenge-card{background:linear-gradient(135deg,#1E1B4B,#312E81);border-radius:16px;padding:14px 16px;margin:0 14px 14px;border:1.5px solid rgba(139,92,246,.4);}
+.chal-hdr{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#A5B4FC;margin-bottom:5px;}
+.chal-txt{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px;line-height:1.4;}
+.chal-xp{font-size:12px;color:#FCD34D;font-weight:600;margin-bottom:10px;}
+.chal-btn{background:#4F46E5;border:none;color:#fff;font-size:13px;font-weight:800;padding:9px 18px;border-radius:9px;cursor:pointer;}
+.chal-done-badge{font-size:13px;color:#86EFAC;font-weight:700;}
+
+/* ── WEEKLY RECAP ─────────────────────────────────────── */
+.recap-banner{background:linear-gradient(135deg,#064E3B,#065F46);border-radius:20px;padding:20px 18px;color:#fff;margin-bottom:16px;}
+.recap-banner-title{font-size:22px;font-weight:900;margin-bottom:2px;}
+.recap-banner-sub{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:16px;}
+.recap-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.recap-cell{background:rgba(255,255,255,.13);border-radius:12px;padding:12px;text-align:center;}
+.recap-cell-val{font-size:26px;font-weight:900;}
+.recap-cell-lbl{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px;text-transform:uppercase;letter-spacing:.5px;}
+.recap-rest-msg{text-align:center;padding:14px 0 4px;font-size:13px;color:var(--muted);}
+
+/* ── LAP TIME LOGGER ──────────────────────────────────── */
+.lap-time-section{padding:10px 14px;border-top:1px solid var(--border);}
+.lap-time-hdr{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:7px;}
+.lap-time-row{display:flex;gap:8px;align-items:center;}
+.lap-time-input{border:2px solid #4ADE80;border-radius:9px;padding:8px 10px;font-size:15px;font-weight:700;width:78px;background:transparent;color:var(--text);outline:none;text-align:center;}
+.lap-time-btn{background:var(--d);color:#fff;border:none;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:800;cursor:pointer;}
+.lap-pb{font-size:12px;color:var(--d);font-weight:800;margin-top:5px;}
+.lap-times-list{font-size:11px;color:var(--muted);margin-top:3px;}
 </style>
 </head>
 <body>
@@ -216,6 +278,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="vtbtn vtbtn-s inactive" id="vt-s" onclick="setView('stats')">🏆 Stats</button>
   </div>
   <div class="tabs" id="tabs"></div>
+</div>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- Level-up overlay -->
+<div id="lvlup-overlay">
+  <div class="lvlup-box">
+    <div class="lvlup-prefix">⬆️ LEVEL UP!</div>
+    <span class="lvlup-main-emoji" id="lvlup-emoji">🔥</span>
+    <div class="lvlup-title" id="lvlup-title">Grinder</div>
+    <div class="lvlup-sub" id="lvlup-sub">You unlocked a new level — keep pushing!</div>
+    <button class="lvlup-cta" onclick="closeLevelUp()">LET'S GO! 🚀</button>
+  </div>
+</div>
+
+<!-- Session complete overlay -->
+<div id="sess-overlay">
+  <div class="sess-box">
+    <div class="sess-box-icon">🎉</div>
+    <div class="sess-box-title" id="sc-title">Session Complete!</div>
+    <div class="sess-box-xp" id="sc-xp">+60</div>
+    <div class="sess-box-xp-lbl" id="sc-xp-lbl">XP earned</div>
+    <button class="sess-box-btn" onclick="closeSessComplete()">Keep it up! 💪</button>
+  </div>
 </div>
 
 <div id="main"></div>
@@ -526,11 +612,13 @@ function computeAllStats() {
     const gFTs    = Object.entries(dd.fts||{}).filter(([k])=>k.includes('grayson')).reduce((a,[,v])=>a+v,0);
     const dLaps   = Object.entries(dd.laps||{}).filter(([k])=>k.includes('devin')).reduce((a,[,v])=>a+v,0);
     // Grayson
-    g.totalDrills+=gDrills; g.totalShots+=gShots; g.totalFTs+=gFTs; g.pts+=gDrills*10;
+    g.totalDrills+=gDrills; g.totalShots+=gShots; g.totalFTs+=gFTs;
+    g.pts+=gDrills*10 + (dd['challenge_grayson_xp']||0);
     if(gDrills>0){g.daysWorked++;if(isTrk)g.trackDays++;}
     if(isWk){g.weekDrills+=gDrills;g.weekShots+=gShots;g.weekFTs+=gFTs;if(gDrills>0)g.weekDays++;}
     // Devin
-    dv.totalDrills+=dDrills; dv.totalLaps+=dLaps; dv.pts+=dDrills*10;
+    dv.totalDrills+=dDrills; dv.totalLaps+=dLaps;
+    dv.pts+=dDrills*10 + (dd['challenge_devin_xp']||0);
     if(dLaps>dv.maxLaps)dv.maxLaps=dLaps;
     if(dDrills>0){dv.daysWorked++;if(isTrk)dv.trackDays++;}
     if(isWk){dv.weekDrills+=dDrills;dv.weekLaps+=dLaps;if(dDrills>0)dv.weekDays++;}
@@ -580,6 +668,383 @@ function getBadges(kid, stats) {
     .map(b => ({...b, earned: b.check(stats)}));
 }
 
+// ── RECORDS ───────────────────────────────────
+function getRecords() { try { return JSON.parse(localStorage.getItem('workout_records')||'{}'); } catch(e){ return {}; } }
+function saveRecords(r) { try { localStorage.setItem('workout_records', JSON.stringify(r)); } catch(e){} }
+
+// ── CONFETTI ──────────────────────────────────
+function launchConfetti(duration) {
+  duration = duration || 3500;
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+  const colors = ['#FFB347','#FF6B6B','#4ADE80','#60A5FA','#F59E0B','#A78BFA','#34D399','#F472B6','#FBBF24'];
+  const particles = Array.from({length:160}, () => ({
+    x: Math.random() * canvas.width,
+    y: -30 - Math.random() * 150,
+    size: Math.random() * 8 + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    speedX: Math.random() * 4 - 2,
+    speedY: Math.random() * 3.5 + 1.5,
+    rotation: Math.random() * 360,
+    rotSpeed: Math.random() * 10 - 5,
+    wobble: Math.random() * Math.PI * 2,
+    wobbleSpeed: Math.random() * 0.1 + 0.05,
+    isRect: Math.random() > 0.5,
+  }));
+  let startTime = null;
+  function frame(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = elapsed > duration - 800 ? Math.max(0, (duration - elapsed) / 800) : 1;
+    particles.forEach(p => {
+      p.wobble += p.wobbleSpeed;
+      p.y += p.speedY;
+      p.x += p.speedX + Math.sin(p.wobble) * 0.8;
+      p.rotation += p.rotSpeed;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      if (p.isRect) { ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2); }
+      else { ctx.beginPath(); ctx.arc(0, 0, p.size/2, 0, Math.PI*2); ctx.fill(); }
+      ctx.restore();
+    });
+    ctx.globalAlpha = 1;
+    if (elapsed < duration) requestAnimationFrame(frame);
+    else canvas.style.display = 'none';
+  }
+  requestAnimationFrame(frame);
+}
+
+// ── LEVEL-UP SYSTEM ───────────────────────────
+function checkLevelUp() {
+  const stats = computeAllStats();
+  for (const kid of ['grayson','devin']) {
+    const pts = kid==='grayson' ? stats.grayson.pts : stats.devin.pts;
+    const { cur } = getLevel(pts, kid);
+    const prevKey = 'prev_level_' + kid;
+    const prev = parseInt(localStorage.getItem(prevKey) || '0');
+    if (prev === 0) {
+      localStorage.setItem(prevKey, cur.num); // first init — no modal
+    } else if (cur.num > prev) {
+      localStorage.setItem(prevKey, cur.num);
+      const capturedKid = kid, capturedLevel = cur;
+      setTimeout(() => showLevelUp(capturedKid, capturedLevel), 800);
+      return; // one at a time
+    }
+  }
+}
+function showLevelUp(kid, level) {
+  launchConfetti(4500);
+  const overlay = document.getElementById('lvlup-overlay');
+  if (!overlay) return;
+  document.getElementById('lvlup-emoji').textContent = level.emoji;
+  document.getElementById('lvlup-title').textContent = level.name;
+  const kidName = kid === 'grayson' ? 'Grayson' : 'Devin';
+  const subs = [
+    kidName + ' is getting DANGEROUS! 🔥',
+    kidName + ' leveled up — the grind is paying off! 💪',
+    kidName + ' is on another level! Keep pushing! ⚡',
+    kidName + ' unlocked a new rank — unstoppable! 🚀',
+  ];
+  document.getElementById('lvlup-sub').textContent = subs[level.num % subs.length];
+  overlay.classList.add('show');
+}
+function closeLevelUp() { document.getElementById('lvlup-overlay').classList.remove('show'); }
+
+// ── SESSION COMPLETE ──────────────────────────
+let _alreadyComplete = new Set();
+function initCompletedSessions() {
+  const day = DAYS[state.day];
+  if (day.rest) return;
+  const sessions = schedule[day.key] || [];
+  for (const sess of sessions) {
+    for (const kid of ['grayson','devin']) {
+      const data = sess[kid];
+      if (!data || !data.blocks) continue;
+      const allDone = data.blocks.every(function(_,i){ return state.checks[ck(day.key,sess.id,kid,i)]; });
+      if (allDone) _alreadyComplete.add(day.key+'-'+sess.id+'-'+kid);
+    }
+  }
+}
+function checkSessionCompletes() {
+  const day = DAYS[state.day];
+  if (day.rest) return;
+  const sessions = schedule[day.key] || [];
+  for (const sess of sessions) {
+    for (const kid of ['grayson','devin']) {
+      const data = sess[kid];
+      if (!data || !data.blocks) continue;
+      const key = day.key+'-'+sess.id+'-'+kid;
+      if (_alreadyComplete.has(key)) continue;
+      const allDone = data.blocks.every(function(_,i){ return state.checks[ck(day.key,sess.id,kid,i)]; });
+      if (allDone) {
+        _alreadyComplete.add(key);
+        const xp = data.blocks.length * 10;
+        const kidName = kid === 'grayson' ? 'Grayson' : 'Devin';
+        const capturedTitle = kidName + ' — Session Done! 🎉';
+        const capturedXP = xp;
+        const capturedCount = data.blocks.length;
+        setTimeout(function(){ showSessComplete(capturedTitle, capturedXP, capturedCount); }, 300);
+        return;
+      }
+    }
+  }
+}
+function showSessComplete(title, xp, drills) {
+  launchConfetti(2500);
+  const overlay = document.getElementById('sess-overlay');
+  if (!overlay) return;
+  document.getElementById('sc-title').textContent = title;
+  document.getElementById('sc-xp').textContent = '+' + xp;
+  document.getElementById('sc-xp-lbl').textContent = 'XP earned · ' + drills + ' drills done!';
+  overlay.classList.add('show');
+}
+function closeSessComplete() { document.getElementById('sess-overlay').classList.remove('show'); }
+
+// ── PERSONAL RECORDS ──────────────────────────
+function checkPersonalRecords() {
+  const today = getDateKey();
+  const h = getHistory();
+  const td = h[today] || {};
+  const records = getRecords();
+  if (!records.grayson) records.grayson = {};
+  if (!records.devin) records.devin = {};
+  const newRecs = [];
+  // Grayson shots
+  const gShots = Object.entries(td.shots||{}).filter(function(e){ return e[0].includes('grayson'); }).reduce(function(a,e){ return a+e[1]; }, 0);
+  const gFTs   = Object.entries(td.fts||{}).filter(function(e){ return e[0].includes('grayson'); }).reduce(function(a,e){ return a+e[1]; }, 0);
+  if (gShots > 0 && gShots > (records.grayson.bestDayShots||0)) {
+    const was = records.grayson.bestDayShots||0;
+    records.grayson.bestDayShots = gShots;
+    if (was > 0) newRecs.push({kid:'grayson', label:gShots+' shots in a day!'});
+  }
+  if (gFTs > 0 && gFTs > (records.grayson.bestDayFTs||0)) {
+    const was = records.grayson.bestDayFTs||0;
+    records.grayson.bestDayFTs = gFTs;
+    if (was > 0) newRecs.push({kid:'grayson', label:gFTs+' FTs in a day!'});
+  }
+  // Devin laps
+  const dLaps = Object.entries(td.laps||{}).filter(function(e){ return e[0].includes('devin'); }).reduce(function(a,e){ return a+e[1]; }, 0);
+  if (dLaps > 0 && dLaps > (records.devin.bestDayLaps||0)) {
+    const was = records.devin.bestDayLaps||0;
+    records.devin.bestDayLaps = dLaps;
+    if (was > 0) newRecs.push({kid:'devin', label:dLaps+' laps today!'});
+  }
+  saveRecords(records);
+  if (newRecs.length > 0) {
+    state._newRecords = newRecs;
+    setTimeout(function(){ state._newRecords = []; render(); }, 5000);
+  }
+}
+
+// ── LAP TIME LOGGER ───────────────────────────
+function logLapTime() {
+  const input = document.getElementById('lap-time-input');
+  if (!input) return;
+  const val = (input.value||'').trim();
+  if (!/^\d{1,2}:\d{2}$/.test(val)) { alert('Enter time as m:ss (e.g. 3:45)'); return; }
+  const parts = val.split(':');
+  const mins = parseInt(parts[0]), secs = parseInt(parts[1]);
+  if (secs >= 60) { alert('Seconds must be 00–59'); return; }
+  const totalSecs = mins * 60 + secs;
+  const records = getRecords();
+  if (!records.devin) records.devin = {};
+  if (!records.devin.lapTimes) records.devin.lapTimes = [];
+  records.devin.lapTimes.push({ date: getDateKey(), display: val, seconds: totalSecs });
+  records.devin.lapTimes = records.devin.lapTimes.slice(-20);
+  const prevBest = records.devin.bestLapTime || Infinity;
+  const isNewPB = totalSecs < prevBest;
+  if (isNewPB) {
+    records.devin.bestLapTime = totalSecs;
+    records.devin.bestLapDisplay = val;
+    if (prevBest < Infinity) {
+      launchConfetti(2500);
+      state._newRecords = [{kid:'devin', label:'New lap best: '+val+'! 🏃'}];
+      setTimeout(function(){ state._newRecords = []; render(); }, 5000);
+    }
+  }
+  saveRecords(records);
+  input.value = '';
+  render();
+}
+function renderLapTimeSection() {
+  const records = getRecords();
+  const lapTimes = (records.devin && records.devin.lapTimes) ? records.devin.lapTimes : [];
+  const bestDisplay = records.devin && records.devin.bestLapDisplay;
+  const recent = lapTimes.slice(-3).reverse().map(function(t){ return t.display; }).join(' · ');
+  return '<div class="lap-time-section">'
+    + '<div class="lap-time-hdr">⏱️ Log a Lap Time</div>'
+    + '<div class="lap-time-row">'
+    + '<input id="lap-time-input" class="lap-time-input" type="text" placeholder="3:45" maxlength="5" />'
+    + '<button class="lap-time-btn" onclick="logLapTime()">Log</button>'
+    + '</div>'
+    + (bestDisplay ? '<div class="lap-pb">🏆 Personal Best: ' + bestDisplay + '</div>' : '')
+    + (recent ? '<div class="lap-times-list">Recent: ' + recent + '</div>' : '')
+    + '</div>';
+}
+
+// ── DAILY CHALLENGE ───────────────────────────
+const G_CHALLENGES = [
+  { text:'Make 10 FTs in a row without missing', xp:50 },
+  { text:'Hit 30 bonus shots from the corners only', xp:40 },
+  { text:'Finish all morning drills before 7:30am', xp:45 },
+  { text:'Make 15 mid-range pull-ups in a row', xp:50 },
+  { text:'Complete every drill tonight with zero breaks', xp:35 },
+  { text:'Make 20 extra free throws at end of session', xp:45 },
+  { text:'Perfect arc on every single FT today', xp:40 },
+  { text:'Hit 5 shots from every spot on the court', xp:50 },
+  { text:'Zero misses in your warmup layup set', xp:35 },
+  { text:'Make 10 floaters in a row', xp:45 },
+  { text:'Beat yesterday\'s total shot count', xp:55 },
+  { text:'Complete ALL drills in both sessions today', xp:60 },
+  { text:'Same arc, same release — every FT today', xp:35 },
+  { text:'Make 10 straight from the top of the key', xp:45 },
+];
+const D_CHALLENGES = [
+  { text:'Run laps 1 and 2 faster than last track day', xp:45 },
+  { text:'Do the Soccer Fun circuit twice today', xp:50 },
+  { text:'Score 8 out of 10 at Kick for Accuracy', xp:40 },
+  { text:'Cone Maze — zero knocked over', xp:35 },
+  { text:'Beat your personal best lap time today', xp:60 },
+  { text:'Run all 8 laps without stopping to walk', xp:55 },
+  { text:'Do 50 Toe Taps as fast as you can', xp:35 },
+  { text:'Score 5 Soccer Bowling strikes in a row', xp:45 },
+  { text:'Step-Over move — 10 times each side', xp:40 },
+  { text:'Sprint the straight-aways on laps 7 and 8', xp:50 },
+  { text:'Check off every drill with zero complaints 😄', xp:40 },
+  { text:'Try Kick for Accuracy from extra far back', xp:35 },
+];
+function getTodayChallenge(kid) {
+  const seed = parseInt(getDateKey().replace(/-/g,''));
+  const pool = kid === 'grayson' ? G_CHALLENGES : D_CHALLENGES;
+  return pool[seed % pool.length];
+}
+function isChallengeComplete(kid) {
+  return !!(getHistory()[getDateKey()] && getHistory()[getDateKey()]['challenge_'+kid]);
+}
+function completeChallenge(kid) {
+  if (isChallengeComplete(kid)) return;
+  const c = getTodayChallenge(kid);
+  const h = getHistory();
+  const today = getDateKey();
+  if (!h[today]) h[today] = { checks:{}, shots:{}, fts:{}, laps:{} };
+  h[today]['challenge_'+kid] = true;
+  h[today]['challenge_'+kid+'_xp'] = c.xp;
+  try { localStorage.setItem('workout_v1', JSON.stringify(h)); } catch(e){}
+  launchConfetti(2000);
+  checkLevelUp();
+  render();
+}
+function renderChallengeCard(kid) {
+  const day = DAYS[state.day];
+  if (day.rest) return '';
+  if (state.day !== getTodayIdx()) return '';
+  const c = getTodayChallenge(kid);
+  const done = isChallengeComplete(kid);
+  return '<div class="challenge-card">'
+    + '<div class="chal-hdr">⚡ DAILY BONUS CHALLENGE</div>'
+    + '<div class="chal-txt">' + c.text + '</div>'
+    + '<div class="chal-xp">+' + c.xp + ' bonus XP if you complete it</div>'
+    + (done
+        ? '<div class="chal-done-badge">✅ Challenge Complete! +' + c.xp + ' XP earned!</div>'
+        : '<button class="chal-btn" onclick="completeChallenge(\'' + kid + '\')">✅ I Did It!</button>')
+    + '</div>';
+}
+
+// ── WEEKLY RECAP ──────────────────────────────
+function renderWeeklyRecap() {
+  const history = getHistory();
+  const weekStart = getWeekStart();
+  const today = getDateKey();
+  let gD=0,gS=0,gFT=0,gSess=0,gXP=0;
+  let dD=0,dL=0,dSess=0,dXP=0;
+  for (const date in history) {
+    if (date > today || isSunday(date) || date < weekStart) continue;
+    const dd = history[date];
+    const gDrills = Object.entries(dd.checks||{}).filter(function(e){ return e[0].includes('-grayson-')&&e[1]; }).length;
+    const dDrills = Object.entries(dd.checks||{}).filter(function(e){ return e[0].includes('-devin-')&&e[1]; }).length;
+    const gShots  = Object.entries(dd.shots||{}).filter(function(e){ return e[0].includes('grayson'); }).reduce(function(a,e){ return a+e[1]; },0);
+    const gFTs    = Object.entries(dd.fts||{}).filter(function(e){ return e[0].includes('grayson'); }).reduce(function(a,e){ return a+e[1]; },0);
+    const dLaps   = Object.entries(dd.laps||{}).filter(function(e){ return e[0].includes('devin'); }).reduce(function(a,e){ return a+e[1]; },0);
+    gD+=gDrills; gS+=gShots; gFT+=gFTs;
+    dD+=dDrills; dL+=dLaps;
+    if(gDrills>0){gSess++;gXP+=gDrills*10;}
+    if(dDrills>0){dSess++;dXP+=dDrills*10;}
+    gXP+=(dd['challenge_grayson_xp']||0);
+    dXP+=(dd['challenge_devin_xp']||0);
+  }
+  const msgs = ['Incredible week, team! 💪','You two crushed it this week! 🔥','Amazing work all week! ⭐','Legends in training! 👑'];
+  const seed = parseInt(weekStart.replace(/-/g,''));
+  const msg = msgs[seed % msgs.length];
+  return '<div class="content"><div class="stats-wrap">'
+    + '<div class="recap-banner">'
+    + '<div class="recap-banner-title">☀️ Week in Review</div>'
+    + '<div class="recap-banner-sub">' + msg + '</div>'
+    + '<div class="recap-grid-2">'
+    + '<div class="recap-cell"><div class="recap-cell-val">' + (gSess+dSess) + '</div><div class="recap-cell-lbl">Sessions</div></div>'
+    + '<div class="recap-cell"><div class="recap-cell-val">' + (gXP+dXP) + '</div><div class="recap-cell-lbl">XP Earned</div></div>'
+    + '</div></div>'
+    + '<div class="stat-card" style="border-top:4px solid var(--g)">'
+    + '<div class="stat-hdr"><div class="stat-av" style="background:var(--g-light)">🏀</div>'
+    + '<div><div class="stat-name" style="color:var(--g)">Grayson\'s Week</div></div>'
+    + '<div class="stat-xp" style="margin-left:auto"><div class="stat-xp-num" style="color:var(--g)">+' + gXP + '</div><div class="stat-xp-lbl">XP</div></div></div>'
+    + '<div class="stat-grid">'
+    + '<div class="stat-cell"><div class="stat-cell-val">' + gSess + '</div><div class="stat-cell-lbl">Sessions</div></div>'
+    + '<div class="stat-cell"><div class="stat-cell-val">' + gD + '</div><div class="stat-cell-lbl">✅ Drills</div></div>'
+    + '<div class="stat-cell"><div class="stat-cell-val">' + gS + '</div><div class="stat-cell-lbl">🏀 Shots</div></div>'
+    + '<div class="stat-cell"><div class="stat-cell-val">' + gFT + '</div><div class="stat-cell-lbl">🎯 FTs</div></div>'
+    + '</div></div>'
+    + '<div class="stat-card" style="border-top:4px solid var(--d)">'
+    + '<div class="stat-hdr"><div class="stat-av" style="background:var(--d-light)">⚽</div>'
+    + '<div><div class="stat-name" style="color:var(--d)">Devin\'s Week</div></div>'
+    + '<div class="stat-xp" style="margin-left:auto"><div class="stat-xp-num" style="color:var(--d)">+' + dXP + '</div><div class="stat-xp-lbl">XP</div></div></div>'
+    + '<div class="stat-grid">'
+    + '<div class="stat-cell"><div class="stat-cell-val">' + dSess + '</div><div class="stat-cell-lbl">Sessions</div></div>'
+    + '<div class="stat-cell"><div class="stat-cell-val">' + dD + '</div><div class="stat-cell-lbl">✅ Drills</div></div>'
+    + '<div class="stat-cell"><div class="stat-cell-val">' + dL + '</div><div class="stat-cell-lbl">🏃 Laps</div></div>'
+    + '<div class="stat-cell"><div class="stat-cell-val">+' + dXP + '</div><div class="stat-cell-lbl">⚡ XP</div></div>'
+    + '</div></div>'
+    + '<div class="recap-rest-msg">🌙 Rest day — recharge for the week ahead!</div>'
+    + '</div></div>';
+}
+
+// ── BADGE PROGRESS HINTS ──────────────────────
+const BADGE_PROGRESS = {
+  'first':      function(s){ return s.daysWorked+'/1 sessions'; },
+  'streak3':    function(s){ return s.streak+'/3 day streak'; },
+  'streak7':    function(s){ return s.streak+'/7 day streak'; },
+  'days10':     function(s){ return s.daysWorked+'/10 sessions'; },
+  'days30':     function(s){ return s.daysWorked+'/30 sessions'; },
+  'days60':     function(s){ return s.daysWorked+'/60 sessions'; },
+  'shots100':   function(s){ return s.totalShots+'/100 shots'; },
+  'shots500':   function(s){ return s.totalShots+'/500 shots'; },
+  'shots1k':    function(s){ return s.totalShots.toLocaleString()+'/1,000 shots'; },
+  'shots2k5':   function(s){ return s.totalShots.toLocaleString()+'/2,500 shots'; },
+  'ft100':      function(s){ return s.totalFTs+'/100 FTs'; },
+  'ft500':      function(s){ return s.totalFTs+'/500 FTs'; },
+  'gtrack1':    function(s){ return s.trackDays+'/1 track days'; },
+  'gtrack5':    function(s){ return s.trackDays+'/5 track days'; },
+  'gtrack10':   function(s){ return s.trackDays+'/10 track days'; },
+  'dsoccer1':   function(s){ return s.daysWorked+'/1 sessions'; },
+  'ddrills10':  function(s){ return s.totalDrills+'/10 drills'; },
+  'dtrack1':    function(s){ return s.trackDays+'/1 track days'; },
+  'dlaps4':     function(s){ return s.maxLaps+'/4 laps (one day)'; },
+  'dlaps8':     function(s){ return s.maxLaps+'/8 laps (one day)'; },
+  'ddrills25':  function(s){ return s.totalDrills+'/25 drills'; },
+  'dtrack3':    function(s){ return s.trackDays+'/3 track days'; },
+  'dlaps20':    function(s){ return s.totalLaps+'/20 total laps'; },
+  'ddrills50':  function(s){ return s.totalDrills+'/50 drills'; },
+  'dtrack5':    function(s){ return s.trackDays+'/5 track days'; },
+  'dlaps50':    function(s){ return s.totalLaps+'/50 total laps'; },
+  'ddrills100': function(s){ return s.totalDrills+'/100 drills'; },
+};
+
 // ── RENDER STATS ──────────────────────────────
 function renderStats() {
   const allStats = computeAllStats();
@@ -624,7 +1089,11 @@ function renderStats() {
       </div>` : ''}
       ${locked.length ? `<div class="badge-wrap" style="border-top:1px solid var(--border)">
         <div class="badge-hdr">🔒 Locked — press &amp; hold to see how to earn</div>
-        <div class="badge-row">${locked.map(b=>`<div class="bdg locked" onpointerdown="startBadgePress('${b.id}')" onpointerup="endBadgePress()" onpointerleave="endBadgePress()" onclick="showBadgeModalFull('${b.id}',false)"><div class="bdg-icon">${b.emoji}</div><div class="bdg-name">${b.name}</div></div>`).join('')}</div>
+        <div class="badge-row">${locked.map(b=>{
+          const progFn = BADGE_PROGRESS[b.id];
+          const prog = progFn ? progFn(stats) : null;
+          return `<div class="bdg locked" onpointerdown="startBadgePress('${b.id}')" onpointerup="endBadgePress()" onpointerleave="endBadgePress()" onclick="showBadgeModalFull('${b.id}',false)"><div class="bdg-icon">${b.emoji}</div><div class="bdg-name">${b.name}</div>${prog ? `<div class="bdg-prog">${prog}</div>` : ''}</div>`;
+        }).join('')}</div>
       </div>` : ''}
     </div>`;
   }
@@ -684,7 +1153,7 @@ function renderMain() {
   if (sOnly) { el.innerHTML = renderStats(); return; }
 
   if (day.rest) {
-    el.innerHTML = `<div class="rest-screen"><div class="r-emoji">😴</div><h2>Rest Day</h2><p>Recovery is where the gains happen.<br>Hydrate, sleep well, come back strong tomorrow.</p></div>`;
+    el.innerHTML = renderWeeklyRecap();
     return;
   }
 
@@ -707,12 +1176,29 @@ function renderMain() {
 
   let html = `<div class="content">`;
 
+  // NEW RECORD banner
+  if (state._newRecords && state._newRecords.length > 0) {
+    const rec = state._newRecords[0];
+    if ((rec.kid === 'grayson' && !dOnly) || (rec.kid === 'devin' && !gOnly)) {
+      html += `<div class="new-rec-banner">
+        <div class="new-rec-flame">🔥</div>
+        <div><div class="new-rec-txt">NEW PERSONAL RECORD!</div><div class="new-rec-sub">${rec.label}</div></div>
+      </div>`;
+    }
+  }
+
   html += `<div class="day-summary">
     <div class="ds-stat"><div class="ds-val">${doneBlocks}/${totalBlocks}</div><div class="ds-lbl">Done</div></div>
     ${(totalShotGoal && !dOnly) ? `<div class="ds-stat"><div class="ds-val" style="color:#FFB347">${totalShots}</div><div class="ds-lbl">🏀 Shots</div></div>` : ''}
     ${(totalFTGoal && !dOnly) ? `<div class="ds-stat"><div class="ds-val" style="color:#FCD34D">${totalFTs}/${totalFTGoal}</div><div class="ds-lbl">🎯 FTs</div></div>` : ''}
     ${(!gOnly && totalLapGoal) ? `<div class="ds-stat"><div class="ds-val" style="color:#6EE7B7">${totalLaps}/${totalLapGoal}</div><div class="ds-lbl">⚽ Laps</div></div>` : ''}
   </div>`;
+
+  // Daily challenge cards (today only)
+  if (state.day === getTodayIdx()) {
+    if (gOnly)  html += renderChallengeCard('grayson');
+    if (dOnly)  html += renderChallengeCard('devin');
+  }
 
   for (const sess of sessions) {
     html += `<div class="session">`;
@@ -803,6 +1289,7 @@ function renderCard(dayKey, sess, kidKey, data, cls, emoji, name, sub) {
       ${met ? `<span class="lap-done-badge">🎉 All 8!</span>` : `<button class="lbtn" onclick="addLap('${key}',${data.lapGoal})">+ Lap</button>`}
       <button class="lbtn rst" onclick="resetLap('${key}')">↺</button>
     </div>`;
+    h += renderLapTimeSection();
   }
 
   // Checklist
@@ -900,16 +1387,22 @@ function toggleCheck(k, makes, shotKey, isFT) {
     if (isFT) { state.fts[shotKey] = Math.max(0,(state.fts[shotKey]||0)+delta); }
     else       { state.shots[shotKey] = Math.max(0,(state.shots[shotKey]||0)+delta); }
   }
-  saveToday(); render();
+  saveToday();
+  checkPersonalRecords();
+  checkSessionCompletes();
+  checkLevelUp();
+  render();
 }
-function addShots(k,n,goal) { if(n===-999){state.shots[k]=0;}else{state.shots[k]=Math.max(0,(state.shots[k]||0)+n);} saveToday(); render(); }
-function addFTs(k,n,goal) { if(n===-999){state.fts[k]=0;}else{state.fts[k]=Math.max(0,(state.fts[k]||0)+n);} saveToday(); render(); }
-function addLap(k,goal) { state.laps[k]=Math.min((state.laps[k]||0)+1,goal); saveToday(); render(); }
-function resetLap(k) { state.laps[k]=0; saveToday(); render(); }
+function addShots(k,n,goal) { if(n===-999){state.shots[k]=0;}else{state.shots[k]=Math.max(0,(state.shots[k]||0)+n);} saveToday(); checkPersonalRecords(); checkLevelUp(); render(); }
+function addFTs(k,n,goal)   { if(n===-999){state.fts[k]=0;}else{state.fts[k]=Math.max(0,(state.fts[k]||0)+n);}   saveToday(); checkPersonalRecords(); checkLevelUp(); render(); }
+function addLap(k,goal)     { state.laps[k]=Math.min((state.laps[k]||0)+1,goal); saveToday(); checkPersonalRecords(); checkLevelUp(); render(); }
+function resetLap(k)        { state.laps[k]=0; saveToday(); render(); }
 
 // ── INIT ─────────────────────────────────────
 state.day = getTodayIdx();
 loadToday();
+initCompletedSessions(); // mark already-done sessions so no false-positive celebrations on load
+checkLevelUp();          // seed prev_level baseline on first run
 try {
   render();
 } catch(e) {
