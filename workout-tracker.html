@@ -151,6 +151,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .vtbtn-g.inactive{background:rgba(255,255,255,.08);color:rgba(255,255,255,.45);border-color:rgba(255,255,255,.12);}
 .vtbtn-d{background:var(--d);color:#fff;border-color:var(--d);}
 .vtbtn-d.inactive{background:rgba(255,255,255,.08);color:rgba(255,255,255,.45);border-color:rgba(255,255,255,.12);}
+.vtbtn-s{background:#F59E0B;color:#fff;border-color:#F59E0B;}
+.vtbtn-s.inactive{background:rgba(255,255,255,.08);color:rgba(255,255,255,.45);border-color:rgba(255,255,255,.12);}
+
+/* STATS */
+.stats-wrap{padding:14px 14px 32px;}
+.stats-section-title{font-size:19px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.stat-card{background:var(--card);border-radius:16px;border:1px solid var(--border);overflow:hidden;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.stat-hdr{display:flex;align-items:center;gap:12px;padding:14px 14px 10px;}
+.stat-av{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.stat-name{font-size:17px;font-weight:800;}
+.stat-lvl-lbl{font-size:12px;color:var(--muted);margin-top:2px;font-weight:600;}
+.stat-xp{margin-left:auto;text-align:right;}
+.stat-xp-num{font-size:22px;font-weight:800;}
+.stat-xp-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+.xp-wrap{margin:0 14px 4px;height:10px;background:var(--border);border-radius:5px;overflow:hidden;}
+.xp-fill{height:100%;border-radius:5px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+.xp-caption{font-size:11px;font-weight:600;color:var(--muted);padding:0 14px 12px;text-align:right;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);}
+.stat-cell{background:var(--card);padding:12px 6px;text-align:center;}
+.stat-cell-val{font-size:20px;font-weight:800;}
+.stat-cell-lbl{font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.3px;}
+.stat-week{padding:10px 14px;border-top:1px solid var(--border);font-size:12px;}
+.stat-week-lbl{font-weight:700;color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.5px;margin-bottom:3px;}
+.stat-week-val{font-weight:600;}
+.badge-wrap{padding:12px 14px;border-top:1px solid var(--border);}
+.badge-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;}
+.bdg{width:68px;text-align:center;padding:8px 4px 6px;border-radius:10px;background:var(--bg);}
+.bdg.locked{opacity:.35;filter:grayscale(.8);}
+.bdg-icon{font-size:22px;line-height:1;}
+.bdg-name{font-size:9px;font-weight:700;margin-top:3px;line-height:1.25;color:var(--text);}
+.lvl-badge{display:inline-flex;align-items:center;gap:5px;background:var(--hdr);color:#FFB347;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:12px;}
+
+/* BADGE MODAL */
+.bdg-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:24px;}
+.bdg-modal-box{background:#fff;border-radius:20px;padding:28px 22px;max-width:320px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.bdg-modal-icon{font-size:52px;margin-bottom:8px;line-height:1;}
+.bdg-modal-name{font-size:20px;font-weight:800;margin-bottom:6px;}
+.bdg-modal-status{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;padding:3px 10px;border-radius:20px;display:inline-block;}
+.bdg-modal-status.locked{background:#FEF2F2;color:#DC2626;}
+.bdg-modal-status.earned{background:#D1FAE5;color:#065F46;}
+.bdg-modal-how{font-size:15px;color:#374151;line-height:1.6;margin-bottom:20px;}
+.bdg-modal-btn{background:var(--hdr);color:#fff;border:none;border-radius:12px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
 </style>
 </head>
 <body>
@@ -168,13 +211,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="view-toggle-wrap">
-    <button class="vtbtn vtbtn-g" id="vt-g" onclick="setView('grayson')">🏀 Grayson Drills</button>
-    <button class="vtbtn vtbtn-d inactive" id="vt-d" onclick="setView('devin')">⚽ Devin Drills</button>
+    <button class="vtbtn vtbtn-g" id="vt-g" onclick="setView('grayson')">🏀 Grayson</button>
+    <button class="vtbtn vtbtn-d inactive" id="vt-d" onclick="setView('devin')">⚽ Devin</button>
+    <button class="vtbtn vtbtn-s inactive" id="vt-s" onclick="setView('stats')">🏆 Stats</button>
   </div>
   <div class="tabs" id="tabs"></div>
 </div>
 
 <div id="main"></div>
+
+<div id="bdg-modal" style="display:none;position:fixed;inset:0;z-index:999;">
+  <div class="bdg-modal-overlay" onclick="closeBadgeModal()">
+    <div class="bdg-modal-box" onclick="event.stopPropagation()">
+      <div class="bdg-modal-icon" id="bm-icon">🏅</div>
+      <div class="bdg-modal-name" id="bm-name"></div>
+      <div class="bdg-modal-status" id="bm-status"></div>
+      <div class="bdg-modal-how" id="bm-how"></div>
+      <button class="bdg-modal-btn" onclick="closeBadgeModal()">Got it! 💪</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const DAYS = [
@@ -377,7 +433,208 @@ const schedule = {
 };
 
 // ── STATE ─────────────────────────────────────
-const state = { day:0, checks:{}, shots:{}, laps:{}, fts:{}, view:'grayson' }; // view: 'grayson' | 'both'
+const state = { day:0, checks:{}, shots:{}, laps:{}, fts:{}, view:'grayson' }; // view: 'grayson'|'devin'|'stats'
+
+// ── PERSISTENCE ───────────────────────────────
+function getDateKey() { return new Date().toISOString().split('T')[0]; }
+function getHistory() { try { return JSON.parse(localStorage.getItem('workout_v1')||'{}'); } catch(e){ return {}; } }
+function saveToday() {
+  try {
+    const h = getHistory();
+    h[getDateKey()] = { checks:{...state.checks}, shots:{...state.shots}, fts:{...state.fts}, laps:{...state.laps} };
+    localStorage.setItem('workout_v1', JSON.stringify(h));
+  } catch(e){}
+}
+function loadToday() {
+  const d = getHistory()[getDateKey()];
+  if (d) {
+    Object.assign(state.checks, d.checks||{});
+    Object.assign(state.shots,  d.shots||{});
+    Object.assign(state.fts,    d.fts||{});
+    Object.assign(state.laps,   d.laps||{});
+  }
+}
+
+// ── LEVELS & XP ───────────────────────────────
+// Thresholds tuned per kid so both hit Legend at ~the same point in the summer
+// Grayson: ~120 pts/day (2 sessions) · Devin: ~70 pts/day (1 session)
+const G_LEVELS = [
+  { pts:0,    num:1, name:'Rookie',      emoji:'🌱', color:'#6B7280' },
+  { pts:150,  num:2, name:'Rising Star', emoji:'⚡', color:'#3B82F6' },
+  { pts:500,  num:3, name:'Grinder',     emoji:'🔥', color:'#F97316' },
+  { pts:1100, num:4, name:'Athlete',     emoji:'💪', color:'#8B5CF6' },
+  { pts:2200, num:5, name:'Elite',       emoji:'🏆', color:'#EF4444' },
+  { pts:4000, num:6, name:'Champion',    emoji:'⭐', color:'#F59E0B' },
+  { pts:6500, num:7, name:'Legend',      emoji:'👑', color:'#10B981' },
+];
+const D_LEVELS = [
+  { pts:0,    num:1, name:'Rookie',      emoji:'🌱', color:'#6B7280' },
+  { pts:80,   num:2, name:'Rising Star', emoji:'⚡', color:'#3B82F6' },
+  { pts:280,  num:3, name:'Grinder',     emoji:'🔥', color:'#F97316' },
+  { pts:600,  num:4, name:'Athlete',     emoji:'💪', color:'#8B5CF6' },
+  { pts:1200, num:5, name:'Elite',       emoji:'🏆', color:'#EF4444' },
+  { pts:2200, num:6, name:'Champion',    emoji:'⭐', color:'#F59E0B' },
+  { pts:3800, num:7, name:'Legend',      emoji:'👑', color:'#10B981' },
+];
+function getLevel(pts, kid) {
+  const LEVELS = kid === 'devin' ? D_LEVELS : G_LEVELS;
+  let cur = LEVELS[0], nxt = LEVELS[1] || null;
+  for (let i = 0; i < LEVELS.length; i++) {
+    if (pts >= LEVELS[i].pts) { cur = LEVELS[i]; nxt = LEVELS[i+1] || null; }
+  }
+  const pct = nxt ? Math.min(100, Math.round((pts - cur.pts) / (nxt.pts - cur.pts) * 100)) : 100;
+  return { cur, nxt, pct };
+}
+
+// ── ALL-TIME STATS ────────────────────────────
+function getWeekStart() {
+  const d = new Date(); const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  return new Date(new Date().setDate(diff)).toISOString().split('T')[0];
+}
+function isTrackDate(ds) {
+  const dow = new Date(ds + 'T12:00:00').getDay(); return dow===2||dow===4||dow===6;
+}
+function isSunday(ds) { return new Date(ds + 'T12:00:00').getDay() === 0; }
+function computeStreak(kid, history) {
+  const today = getDateKey();
+  const todayDrills = Object.entries(history[today]?.checks||{}).filter(([k,v])=>k.includes(`-${kid}-`)&&v).length;
+  const start = new Date((todayDrills > 0 ? today : (() => { const d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().split('T')[0]; })()) + 'T12:00:00');
+  let streak = 0, cur = new Date(start), safety = 0;
+  while (safety++ < 400) {
+    const ds = cur.toISOString().split('T')[0];
+    if (isSunday(ds)) { cur.setDate(cur.getDate()-1); continue; } // skip rest day
+    const drills = Object.entries(history[ds]?.checks||{}).filter(([k,v])=>k.includes(`-${kid}-`)&&v).length;
+    if (drills > 0) { streak++; cur.setDate(cur.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+function computeAllStats() {
+  const history = getHistory();
+  const weekStart = getWeekStart();
+  const g = { pts:0, totalDrills:0, weekDrills:0, totalShots:0, weekShots:0, totalFTs:0, weekFTs:0, daysWorked:0, weekDays:0, streak:0, trackDays:0 };
+  const dv = { pts:0, totalDrills:0, weekDrills:0, totalLaps:0, weekLaps:0, maxLaps:0, daysWorked:0, weekDays:0, streak:0, trackDays:0 };
+  const sortedDates = Object.keys(history).sort().reverse();
+
+  for (const date of sortedDates) {
+    if (isSunday(date)) continue; // skip rest days in aggregates
+    const dd = history[date]; const isWk = date >= weekStart; const isTrk = isTrackDate(date);
+    const gDrills = Object.entries(dd.checks||{}).filter(([k,v])=>k.includes('-grayson-')&&v).length;
+    const dDrills = Object.entries(dd.checks||{}).filter(([k,v])=>k.includes('-devin-')&&v).length;
+    const gShots  = Object.entries(dd.shots||{}).filter(([k])=>k.includes('grayson')).reduce((a,[,v])=>a+v,0);
+    const gFTs    = Object.entries(dd.fts||{}).filter(([k])=>k.includes('grayson')).reduce((a,[,v])=>a+v,0);
+    const dLaps   = Object.entries(dd.laps||{}).filter(([k])=>k.includes('devin')).reduce((a,[,v])=>a+v,0);
+    // Grayson
+    g.totalDrills+=gDrills; g.totalShots+=gShots; g.totalFTs+=gFTs; g.pts+=gDrills*10;
+    if(gDrills>0){g.daysWorked++;if(isTrk)g.trackDays++;}
+    if(isWk){g.weekDrills+=gDrills;g.weekShots+=gShots;g.weekFTs+=gFTs;if(gDrills>0)g.weekDays++;}
+    // Devin
+    dv.totalDrills+=dDrills; dv.totalLaps+=dLaps; dv.pts+=dDrills*10;
+    if(dLaps>dv.maxLaps)dv.maxLaps=dLaps;
+    if(dDrills>0){dv.daysWorked++;if(isTrk)dv.trackDays++;}
+    if(isWk){dv.weekDrills+=dDrills;dv.weekLaps+=dLaps;if(dDrills>0)dv.weekDays++;}
+  }
+  // Streaks computed separately with Sunday-skip logic
+  g.streak  = computeStreak('grayson', history);
+  dv.streak = computeStreak('devin',   history);
+  return { grayson: g, devin: dv };
+}
+
+// ── BADGES ────────────────────────────────────
+const ALL_BADGES = [
+  // Shared
+  { id:'first',     kid:'both',    emoji:'🏁', name:'First Day!',     how:'Show up and complete your very first workout session. Today is the day!',                    check:(s)=>s.daysWorked>=1 },
+  { id:'streak3',   kid:'both',    emoji:'🔥', name:'On Fire',        how:'Work out 3 days in a row without skipping a day. Consistency is everything!',               check:(s)=>s.streak>=3 },
+  { id:'streak7',   kid:'both',    emoji:'💥', name:'Week Warrior',   how:'Work out for 7 days in a row — Sundays off don\'t break your streak, so keep going Mon–Sat and beyond!', check:(s)=>s.streak>=7 },
+  { id:'days10',    kid:'both',    emoji:'📅', name:'10 Sessions',    how:'Complete 10 total workout sessions this summer. Keep showing up!',                           check:(s)=>s.daysWorked>=10 },
+  { id:'days30',    kid:'both',    emoji:'💯', name:'30 Sessions',    how:'Complete 30 total workout sessions. That\'s a whole month of hard work!',                    check:(s)=>s.daysWorked>=30 },
+  { id:'days60',    kid:'both',    emoji:'🏆', name:'Summer Champ',   how:'Complete 60 sessions across the entire summer. Only the most dedicated earn this one.',      check:(s)=>s.daysWorked>=60 },
+  // Grayson
+  { id:'shots100',  kid:'grayson', emoji:'🏀', name:'First 100',      how:'Make 100 total shots across all your sessions. Every make counts — keep shooting!',         check:(s)=>s.totalShots>=100 },
+  { id:'shots500',  kid:'grayson', emoji:'🏀', name:'500 Shots',      how:'Make 500 total shots this summer. That\'s a lot of reps — keep putting in the work!',       check:(s)=>s.totalShots>=500 },
+  { id:'shots1k',   kid:'grayson', emoji:'🏀', name:'1,000 Shots',    how:'Make 1,000 total shots! Bucket machine status. You\'re building real shooter\'s habits.',    check:(s)=>s.totalShots>=1000 },
+  { id:'shots2k5',  kid:'grayson', emoji:'🏀', name:'2,500 Shots',    how:'Make 2,500 total shots this summer. Elite level dedication — this badge is rare!',           check:(s)=>s.totalShots>=2500 },
+  { id:'ft100',     kid:'grayson', emoji:'🎯', name:'Sniper',         how:'Make 100 free throws total. Full routine every single shot — same arc, same release.',       check:(s)=>s.totalFTs>=100 },
+  { id:'ft500',     kid:'grayson', emoji:'🎯', name:'FT Machine',     how:'Make 500 free throws! You\'re becoming automatic from the line. Keep that routine tight.',   check:(s)=>s.totalFTs>=500 },
+  { id:'gtrack1',   kid:'grayson', emoji:'🏃', name:'Track Debut',    how:'Complete your first track night session. Show up on a Tuesday, Thursday, or Saturday!',     check:(s)=>s.trackDays>=1 },
+  { id:'gtrack5',   kid:'grayson', emoji:'🏃', name:'Track Regular',  how:'Complete 5 track sessions total. Consistency at the track makes your handles elite.',        check:(s)=>s.trackDays>=5 },
+  { id:'gtrack10',  kid:'grayson', emoji:'🏃', name:'Track Beast',    how:'Complete 10 track sessions this summer. You\'re putting in the work most players skip!',    check:(s)=>s.trackDays>=10 },
+  // Devin — more frequent milestones so he's always close to the next badge
+  { id:'dsoccer1',  kid:'devin',   emoji:'⚽', name:'Kick It!',       how:'Complete your very first soccer fun session. Grab the ball and get going!',                         check:(s)=>s.daysWorked>=1 },
+  { id:'ddrills10', kid:'devin',   emoji:'✅', name:'10 Drills',      how:'Check off 10 drills total. Soccer and track both count — keep tapping those checkboxes!',           check:(s)=>s.totalDrills>=10 },
+  { id:'dtrack1',   kid:'devin',   emoji:'🏃', name:'Track Debut',    how:'Show up for your first track session on a Tuesday, Thursday, or Saturday!',                         check:(s)=>s.trackDays>=1 },
+  { id:'dlaps4',    kid:'devin',   emoji:'💨', name:'First 4 Laps',   how:'Run 4 laps in a single track session — halfway to the full goal!',                                  check:(s)=>s.maxLaps>=4 },
+  { id:'dlaps8',    kid:'devin',   emoji:'🏆', name:'8 Laps!',        how:'Run all 8 laps in a single track session without stopping. You can do it — keep going!',             check:(s)=>s.maxLaps>=8 },
+  { id:'ddrills25', kid:'devin',   emoji:'⭐', name:'25 Drills',      how:'Check off 25 total drills. Soccer, track, everything counts — you\'re building up!',                 check:(s)=>s.totalDrills>=25 },
+  { id:'dtrack3',   kid:'devin',   emoji:'🏃', name:'Track Habit',    how:'Come to 3 track sessions. You\'re starting to build a real running habit!',                          check:(s)=>s.trackDays>=3 },
+  { id:'dlaps20',   kid:'devin',   emoji:'🦵', name:'20 Laps',        how:'Run 20 total laps across all your track days. That\'s some serious mileage!',                        check:(s)=>s.totalLaps>=20 },
+  { id:'ddrills50', kid:'devin',   emoji:'🌟', name:'50 Drills',      how:'Complete 50 total drills this summer. You\'re putting in serious work — keep it up!',               check:(s)=>s.totalDrills>=50 },
+  { id:'dtrack5',   kid:'devin',   emoji:'🏃', name:'Track Regular',  how:'Come to 5 track sessions. Runners are made by showing up again and again!',                          check:(s)=>s.trackDays>=5 },
+  { id:'dlaps50',   kid:'devin',   emoji:'🔥', name:'Lap Legend',     how:'Run 50 total laps across all your track days. That\'s a LOT of running — elite endurance!',         check:(s)=>s.totalLaps>=50 },
+  { id:'ddrills100',kid:'devin',   emoji:'👑', name:'100 Drills',     how:'Complete 100 drills total this summer. If you hit this one, you\'re an absolute legend!',            check:(s)=>s.totalDrills>=100 },
+];
+function getBadges(kid, stats) {
+  return ALL_BADGES
+    .filter(b => b.kid==='both' || b.kid===kid)
+    .map(b => ({...b, earned: b.check(stats)}));
+}
+
+// ── RENDER STATS ──────────────────────────────
+function renderStats() {
+  const allStats = computeAllStats();
+  function kidCard(kid, stats, emoji, name, accent) {
+    const { cur, nxt, pct } = getLevel(stats.pts, kid);
+    const badges = getBadges(kid, stats);
+    const earned = badges.filter(b=>b.earned);
+    const locked = badges.filter(b=>!b.earned);
+    const avBg = kid==='grayson' ? 'var(--g-light)' : 'var(--d-light)';
+    return `<div class="stat-card" style="border-top:4px solid ${accent}">
+      <div class="stat-hdr">
+        <div class="stat-av" style="background:${avBg}">${emoji}</div>
+        <div>
+          <div class="stat-name" style="color:${accent}">${name}</div>
+          <div class="stat-lvl-lbl">${cur.emoji} Lv.${cur.num} ${cur.name}</div>
+        </div>
+        <div class="stat-xp" style="margin-left:auto">
+          <div class="stat-xp-num" style="color:${accent}">${stats.pts}</div>
+          <div class="stat-xp-lbl">XP</div>
+        </div>
+      </div>
+      <div class="xp-wrap"><div class="xp-fill" style="width:${pct}%;background:${accent}"></div></div>
+      <div class="xp-caption">${nxt ? `${nxt.pts - stats.pts} XP to ${nxt.emoji} ${nxt.name}` : '👑 MAX LEVEL!'}</div>
+      <div class="stat-grid">
+        <div class="stat-cell"><div class="stat-cell-val">${stats.daysWorked}</div><div class="stat-cell-lbl">Sessions</div></div>
+        <div class="stat-cell"><div class="stat-cell-val">${stats.streak}🔥</div><div class="stat-cell-lbl">Streak</div></div>
+        ${kid==='grayson'
+          ? `<div class="stat-cell"><div class="stat-cell-val">${stats.totalShots}</div><div class="stat-cell-lbl">🏀 Shots</div></div>
+             <div class="stat-cell"><div class="stat-cell-val">${stats.totalFTs}</div><div class="stat-cell-lbl">🎯 FTs</div></div>`
+          : `<div class="stat-cell"><div class="stat-cell-val">${stats.totalDrills}</div><div class="stat-cell-lbl">✅ Drills</div></div>
+             <div class="stat-cell"><div class="stat-cell-val">${stats.totalLaps}</div><div class="stat-cell-lbl">🏃 Laps</div></div>`}
+      </div>
+      <div class="stat-week">
+        <div class="stat-week-lbl">This Week</div>
+        <div class="stat-week-val">${kid==='grayson'
+          ? `${stats.weekDrills} drills · ${stats.weekShots} shots · ${stats.weekFTs} FTs`
+          : `${stats.weekDrills} drills · ${stats.weekLaps} laps`}</div>
+      </div>
+      ${earned.length ? `<div class="badge-wrap">
+        <div class="badge-hdr">🏅 Earned (${earned.length})</div>
+        <div class="badge-row">${earned.map(b=>`<div class="bdg" onpointerdown="startBadgePress('${b.id}')" onpointerup="endBadgePress()" onpointerleave="endBadgePress()" onclick="showBadgeModalFull('${b.id}',true)"><div class="bdg-icon">${b.emoji}</div><div class="bdg-name">${b.name}</div></div>`).join('')}</div>
+      </div>` : ''}
+      ${locked.length ? `<div class="badge-wrap" style="border-top:1px solid var(--border)">
+        <div class="badge-hdr">🔒 Locked — press &amp; hold to see how to earn</div>
+        <div class="badge-row">${locked.map(b=>`<div class="bdg locked" onpointerdown="startBadgePress('${b.id}')" onpointerup="endBadgePress()" onpointerleave="endBadgePress()" onclick="showBadgeModalFull('${b.id}',false)"><div class="bdg-icon">${b.emoji}</div><div class="bdg-name">${b.name}</div></div>`).join('')}</div>
+      </div>` : ''}
+    </div>`;
+  }
+  const showG = state.view==='stats'; // stats shows both
+  return `<div class="stats-wrap">
+    <div class="stats-section-title">🏆 Summer Stats 2026</div>
+    ${kidCard('grayson', allStats.grayson, '🏀', 'Grayson', 'var(--g)')}
+    ${kidCard('devin',   allStats.devin,   '⚽', 'Devin',   'var(--d)')}
+  </div>`;
+}
 
 function getTodayIdx() {
   const d = new Date().getDay();
@@ -407,16 +664,24 @@ function renderMain() {
   const el = document.getElementById('main');
   const gOnly = state.view === 'grayson';
   const dOnly = state.view === 'devin';
+  const sOnly = state.view === 'stats';
 
   // Update toggle button styles
   const vtG = document.getElementById('vt-g');
   const vtD = document.getElementById('vt-d');
+  const vtS = document.getElementById('vt-s');
   const hdrSub = document.getElementById('hdr-sub');
   if (vtG) vtG.className = 'vtbtn vtbtn-g' + (gOnly ? '' : ' inactive');
   if (vtD) vtD.className = 'vtbtn vtbtn-d' + (dOnly ? '' : ' inactive');
+  if (vtS) vtS.className = 'vtbtn vtbtn-s' + (sOnly ? '' : ' inactive');
   if (hdrSub) hdrSub.innerHTML = gOnly
     ? '🏀 <b style="color:#FFB347">Grayson\'s Drills</b>'
-    : '⚽ <b style="color:#4ADE80">Devin\'s Drills</b>';
+    : dOnly
+      ? '⚽ <b style="color:#4ADE80">Devin\'s Drills</b>'
+      : '🏆 <b style="color:#F59E0B">Summer Stats</b>';
+
+  // Stats view
+  if (sOnly) { el.innerHTML = renderStats(); return; }
 
   if (day.rest) {
     el.innerHTML = `<div class="rest-screen"><div class="r-emoji">😴</div><h2>Rest Day</h2><p>Recovery is where the gains happen.<br>Hydrate, sleep well, come back strong tomorrow.</p></div>`;
@@ -599,6 +864,31 @@ function updateHeaderProg() {
   document.getElementById('hdr-bar').style.width = pct+'%';
 }
 
+// ── BADGE MODAL ───────────────────────────────
+let _pressTimer = null;
+function startBadgePress(id) {
+  _pressTimer = setTimeout(() => showBadgeModal(id), 500);
+}
+function endBadgePress() { clearTimeout(_pressTimer); }
+function showBadgeModal(id) {
+  const b = ALL_BADGES.find(x => x.id === id);
+  if (!b) return;
+  const earned = b.check ? false : false; // we pass earned flag via data attr
+  document.getElementById('bm-icon').textContent = b.emoji;
+  document.getElementById('bm-name').textContent = b.name;
+  document.getElementById('bm-how').textContent = b.how;
+  const status = document.getElementById('bm-status');
+  const isEarned = document.getElementById('bdg-modal').dataset.earned === '1';
+  status.textContent = isEarned ? '✅ Badge Earned!' : '🔒 Not Yet Earned';
+  status.className = 'bdg-modal-status ' + (isEarned ? 'earned' : 'locked');
+  document.getElementById('bdg-modal').style.display = 'block';
+}
+function showBadgeModalFull(id, earned) {
+  document.getElementById('bdg-modal').dataset.earned = earned ? '1' : '0';
+  showBadgeModal(id);
+}
+function closeBadgeModal() { document.getElementById('bdg-modal').style.display = 'none'; }
+
 // ── INTERACTIONS ─────────────────────────────
 function setView(v) { state.view=v; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function switchDay(i) { state.day=i; render(); window.scrollTo({top:0,behavior:'smooth'}); }
@@ -610,15 +900,16 @@ function toggleCheck(k, makes, shotKey, isFT) {
     if (isFT) { state.fts[shotKey] = Math.max(0,(state.fts[shotKey]||0)+delta); }
     else       { state.shots[shotKey] = Math.max(0,(state.shots[shotKey]||0)+delta); }
   }
-  render();
+  saveToday(); render();
 }
-function addShots(k,n,goal) { if(n===-999){state.shots[k]=0;}else{state.shots[k]=Math.max(0,(state.shots[k]||0)+n);} render(); }
-function addFTs(k,n,goal) { if(n===-999){state.fts[k]=0;}else{state.fts[k]=Math.max(0,(state.fts[k]||0)+n);} render(); }
-function addLap(k,goal) { state.laps[k]=Math.min((state.laps[k]||0)+1,goal); render(); }
-function resetLap(k) { state.laps[k]=0; render(); }
+function addShots(k,n,goal) { if(n===-999){state.shots[k]=0;}else{state.shots[k]=Math.max(0,(state.shots[k]||0)+n);} saveToday(); render(); }
+function addFTs(k,n,goal) { if(n===-999){state.fts[k]=0;}else{state.fts[k]=Math.max(0,(state.fts[k]||0)+n);} saveToday(); render(); }
+function addLap(k,goal) { state.laps[k]=Math.min((state.laps[k]||0)+1,goal); saveToday(); render(); }
+function resetLap(k) { state.laps[k]=0; saveToday(); render(); }
 
 // ── INIT ─────────────────────────────────────
 state.day = getTodayIdx();
+loadToday();
 try {
   render();
 } catch(e) {
