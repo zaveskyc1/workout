@@ -973,16 +973,18 @@ function getTodayChallenge(kid) {
   return pool[seed % pool.length];
 }
 function isChallengeComplete(kid) {
-  return !!(getHistory()[getDateKey()] && getHistory()[getDateKey()]['challenge_'+kid]);
+  // Use the same date key as the rest of the day's data (avoids UTC mismatch)
+  const dateKey = getDateKeyForDayIdx(state.day);
+  return !!(getHistory()[dateKey] && getHistory()[dateKey]['challenge_'+kid]);
 }
 function completeChallenge(kid) {
   if (isChallengeComplete(kid)) return;
   const c = getTodayChallenge(kid);
   const h = getHistory();
-  const today = getDateKey();
-  if (!h[today]) h[today] = { checks:{}, shots:{}, fts:{}, laps:{} };
-  h[today]['challenge_'+kid] = true;
-  h[today]['challenge_'+kid+'_xp'] = c.xp;
+  const dateKey = getDateKeyForDayIdx(state.day); // consistent with saveCurrent()
+  if (!h[dateKey]) h[dateKey] = { checks:{}, shots:{}, fts:{}, laps:{} };
+  h[dateKey]['challenge_'+kid] = true;
+  h[dateKey]['challenge_'+kid+'_xp'] = c.xp;
   try { localStorage.setItem('workout_v1', JSON.stringify(h)); } catch(e){}
   launchConfetti(2000);
   checkLevelUp();
@@ -1022,7 +1024,7 @@ function renderWeeklyRecap() {
     gD+=gDrills; gS+=gShots; gFT+=gFTs;
     dD+=dDrills; dL+=dLaps;
     if(gDrills>0){gSess++;gXP+=gDrills*10;}
-    if(dDrills>0){dSess++;dXP+=dDrills*10;}
+    if(dDrills>0||dLaps>0){dSess++;dXP+=dDrills*10+dLaps*5;} // laps count as a session + earn XP
     gXP+=(dd['challenge_grayson_xp']||0);
     dXP+=(dd['challenge_devin_xp']||0);
   }
@@ -1512,24 +1514,35 @@ function addLap(k,goal)     { state.laps[k]=Math.min((state.laps[k]||0)+1,goal);
 function resetLap(k)        { state.laps[k]=0; saveToday(); render(); }
 
 // ── CATCH-UP: auto-fill all past weekdays this week (Tue → yesterday) ────
+// Runs on every page load. Fills Tue through yesterday as "all done".
+// Always overwrites past days so partially-checked days get completed.
+// Never touches today or future days.
 function autoFillPastWeek() {
   const history = getHistory();
   const todayIdx = getTodayIdx();
-  const today = new Date();
-  // Iterate Mon(0) through yesterday — skip today and Sunday(rest)
-  for (let dayIdx = 0; dayIdx < todayIdx; dayIdx++) {
+  // Start at Tuesday (idx 1) — user's first training day. Skip Monday (idx 0).
+  for (let dayIdx = 1; dayIdx < todayIdx; dayIdx++) {
     const day = DAYS[dayIdx];
     if (!day || day.rest) continue;
-    // Compute calendar date for this day index
+    // Compute the real calendar date for this day tab
     const diff = dayIdx - todayIdx;
     const d = new Date();
     d.setDate(d.getDate() + diff);
     const dateKey = d.toISOString().split('T')[0];
-    // Skip if we already have check data for this day
-    const existing = history[dateKey];
-    if (existing && Object.keys(existing.checks || {}).length > 0) continue;
-    // Build a full "all done" entry
-    const entry = { checks: {}, shots: {}, fts: {}, laps: {} };
+    // Preserve any manually-entered challenge XP from existing entry
+    const existing = history[dateKey] || {};
+    const entry = {
+      checks: {},
+      shots:  {},
+      fts:    {},
+      laps:   {},
+    };
+    // Carry over challenge XP if already earned
+    if (existing['challenge_grayson'])    entry['challenge_grayson']    = existing['challenge_grayson'];
+    if (existing['challenge_grayson_xp']) entry['challenge_grayson_xp'] = existing['challenge_grayson_xp'];
+    if (existing['challenge_devin'])      entry['challenge_devin']      = existing['challenge_devin'];
+    if (existing['challenge_devin_xp'])   entry['challenge_devin_xp']   = existing['challenge_devin_xp'];
+    // Mark every drill done for both kids
     const sessions = schedule[day.key] || [];
     for (const sess of sessions) {
       for (const kid of ['grayson', 'devin']) {
