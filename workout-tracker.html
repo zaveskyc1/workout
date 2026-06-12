@@ -1513,41 +1513,53 @@ function addFTs(k,n,goal)   { if(n===-999){state.fts[k]=0;}else{state.fts[k]=Mat
 function addLap(k,goal)     { state.laps[k]=Math.min((state.laps[k]||0)+1,goal); saveToday(); checkPersonalRecords(); checkLevelUp(); render(); }
 function resetLap(k)        { state.laps[k]=0; saveToday(); render(); }
 
-// ── CATCH-UP: auto-fill all past weekdays this week (Tue → yesterday) ────
-// Runs on every page load. Fills Tue through yesterday as "all done".
-// Always overwrites past days so partially-checked days get completed.
-// Never touches today or future days.
+// ── CATCH-UP: auto-fill past weekdays with accurate history ──────────────
+// Rules:
+//   Monday  (idx 0): clear entirely — neither kid worked out Monday
+//   Tue–yesterday  : Grayson gets ALL sessions filled
+//                    Devin gets ONLY track sessions (isTrack:true) — he hasn't done soccer yet
+// Always overwrites so stale partial data gets corrected on each deploy.
 function autoFillPastWeek() {
   const history = getHistory();
   const todayIdx = getTodayIdx();
-  // Start at Tuesday (idx 1) — user's first training day. Skip Monday (idx 0).
+
+  // Helper to build date key for a given day index
+  function dateForIdx(idx) {
+    const d = new Date();
+    d.setDate(d.getDate() + (idx - todayIdx));
+    return d.toISOString().split('T')[0];
+  }
+
+  // Step 1: Clear Monday entirely (neither kid worked out)
+  const mondayKey = dateForIdx(0);
+  const mondayEx  = history[mondayKey] || {};
+  history[mondayKey] = { checks:{}, shots:{}, fts:{}, laps:{} };
+  // Preserve any challenge data that may have been tapped
+  if (mondayEx['challenge_grayson'])    history[mondayKey]['challenge_grayson']    = mondayEx['challenge_grayson'];
+  if (mondayEx['challenge_grayson_xp']) history[mondayKey]['challenge_grayson_xp'] = mondayEx['challenge_grayson_xp'];
+  if (mondayEx['challenge_devin'])      history[mondayKey]['challenge_devin']      = mondayEx['challenge_devin'];
+  if (mondayEx['challenge_devin_xp'])   history[mondayKey]['challenge_devin_xp']   = mondayEx['challenge_devin_xp'];
+
+  // Step 2: Fill Tuesday (idx 1) through yesterday
   for (let dayIdx = 1; dayIdx < todayIdx; dayIdx++) {
     const day = DAYS[dayIdx];
     if (!day || day.rest) continue;
-    // Compute the real calendar date for this day tab
-    const diff = dayIdx - todayIdx;
-    const d = new Date();
-    d.setDate(d.getDate() + diff);
-    const dateKey = d.toISOString().split('T')[0];
-    // Preserve any manually-entered challenge XP from existing entry
+    const dateKey = dateForIdx(dayIdx);
     const existing = history[dateKey] || {};
-    const entry = {
-      checks: {},
-      shots:  {},
-      fts:    {},
-      laps:   {},
-    };
-    // Carry over challenge XP if already earned
+    const entry = { checks:{}, shots:{}, fts:{}, laps:{} };
+    // Preserve any already-earned challenge XP
     if (existing['challenge_grayson'])    entry['challenge_grayson']    = existing['challenge_grayson'];
     if (existing['challenge_grayson_xp']) entry['challenge_grayson_xp'] = existing['challenge_grayson_xp'];
     if (existing['challenge_devin'])      entry['challenge_devin']      = existing['challenge_devin'];
     if (existing['challenge_devin_xp'])   entry['challenge_devin_xp']   = existing['challenge_devin_xp'];
-    // Mark every drill done for both kids
+
     const sessions = schedule[day.key] || [];
     for (const sess of sessions) {
-      for (const kid of ['grayson', 'devin']) {
+      // Grayson: fill every session
+      (function fillKid(kid, allowed) {
+        if (!allowed) return;
         const data = sess[kid];
-        if (!data || !data.blocks) continue;
+        if (!data || !data.blocks) return;
         data.blocks.forEach(function(b, i) {
           entry.checks[ck(day.key, sess.id, kid, i)] = true;
           const makesTag = b.tags && b.tags.find(function(t){ return /^\d+\s+makes/.test(t); });
@@ -1560,7 +1572,24 @@ function autoFillPastWeek() {
         if (kid === 'devin' && data.lapGoal) {
           entry.laps[lk(day.key, sess.id, kid)] = data.lapGoal;
         }
-      }
+      })('grayson', true);         // Grayson: all sessions
+      (function fillKid(kid, allowed) {
+        if (!allowed) return;
+        const data = sess[kid];
+        if (!data || !data.blocks) return;
+        data.blocks.forEach(function(b, i) {
+          entry.checks[ck(day.key, sess.id, kid, i)] = true;
+          const makesTag = b.tags && b.tags.find(function(t){ return /^\d+\s+makes/.test(t); });
+          const makes = makesTag ? parseInt(makesTag) : 0;
+          if (makes > 0) {
+            if (b.isFT) { const fk2 = ftk(day.key, sess.id, kid); entry.fts[fk2]  = (entry.fts[fk2]||0)  + makes; }
+            else        { const sk2 = sk(day.key,  sess.id, kid);  entry.shots[sk2] = (entry.shots[sk2]||0) + makes; }
+          }
+        });
+        if (kid === 'devin' && data.lapGoal) {
+          entry.laps[lk(day.key, sess.id, kid)] = data.lapGoal;
+        }
+      })('devin', !!sess.isTrack);  // Devin: track sessions only
     }
     history[dateKey] = entry;
   }
