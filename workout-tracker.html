@@ -527,15 +527,37 @@ const state = { day:0, checks:{}, shots:{}, laps:{}, fts:{}, view:'grayson' }; /
 // ── PERSISTENCE ───────────────────────────────
 function getDateKey() { return new Date().toISOString().split('T')[0]; }
 function getHistory() { try { return JSON.parse(localStorage.getItem('workout_v1')||'{}'); } catch(e){ return {}; } }
-function saveToday() {
+
+// Returns the real calendar date (YYYY-MM-DD) for a given day-tab index.
+// Anchored to this week so Mon=this Monday, Tue=this Tuesday, etc.
+function getDateKeyForDayIdx(dayIdx) {
+  const todayIdx = getTodayIdx();
+  const diff = dayIdx - todayIdx;
+  const d = new Date();
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().split('T')[0];
+}
+
+// Save current state to the SELECTED day's calendar date (not always "today").
+function saveCurrent() {
   try {
+    const dateKey = getDateKeyForDayIdx(state.day);
     const h = getHistory();
-    h[getDateKey()] = { checks:{...state.checks}, shots:{...state.shots}, fts:{...state.fts}, laps:{...state.laps} };
+    h[dateKey] = { checks:{...state.checks}, shots:{...state.shots}, fts:{...state.fts}, laps:{...state.laps} };
     localStorage.setItem('workout_v1', JSON.stringify(h));
   } catch(e){}
 }
-function loadToday() {
-  const d = getHistory()[getDateKey()];
+// Keep saveToday as alias so challenge code still works
+function saveToday() { saveCurrent(); }
+
+// Load a day-tab's history into state (clearing previous state first).
+function loadSelectedDay(dayIdx) {
+  state.checks = {};
+  state.shots  = {};
+  state.fts    = {};
+  state.laps   = {};
+  const dateKey = getDateKeyForDayIdx(dayIdx);
+  const d = getHistory()[dateKey];
   if (d) {
     Object.assign(state.checks, d.checks||{});
     Object.assign(state.shots,  d.shots||{});
@@ -543,6 +565,8 @@ function loadToday() {
     Object.assign(state.laps,   d.laps||{});
   }
 }
+// Legacy alias
+function loadToday() { loadSelectedDay(state.day); }
 
 // ── LEVELS & XP ───────────────────────────────
 // Thresholds tuned per kid so both hit Legend at ~the same point in the summer
@@ -812,7 +836,7 @@ function closeSessComplete() { document.getElementById('sess-overlay').classList
 
 // ── PERSONAL RECORDS ──────────────────────────
 function checkPersonalRecords() {
-  const today = getDateKey();
+  const today = getDateKeyForDayIdx(state.day);
   const h = getHistory();
   const td = h[today] || {};
   const records = getRecords();
@@ -1421,7 +1445,15 @@ function markAllDone(dayKey, kid) {
 
 // ── INTERACTIONS ─────────────────────────────
 function setView(v) { state.view=v; render(); window.scrollTo({top:0,behavior:'smooth'}); }
-function switchDay(i) { state.day=i; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function switchDay(i) {
+  saveCurrent();          // flush current day's state before switching
+  state.day = i;
+  loadSelectedDay(i);     // load the new day's history into state
+  _alreadyComplete = new Set(); // reset session-complete tracker for new day
+  initCompletedSessions(); // re-mark already-done sessions so no false celebrations
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 function toggleCheck(k, makes, shotKey, isFT) {
   const wasChecked = state.checks[k];
   state.checks[k] = !wasChecked;
@@ -1443,9 +1475,9 @@ function resetLap(k)        { state.laps[k]=0; saveToday(); render(); }
 
 // ── INIT ─────────────────────────────────────
 state.day = getTodayIdx();
-loadToday();
-initCompletedSessions(); // mark already-done sessions so no false-positive celebrations on load
-checkLevelUp();          // seed prev_level baseline on first run
+loadSelectedDay(state.day); // load today's history into state
+initCompletedSessions();    // mark already-done sessions so no false-positive celebrations on load
+checkLevelUp();             // seed prev_level baseline on first run
 try {
   render();
 } catch(e) {
