@@ -183,6 +183,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .bdg-icon{font-size:22px;line-height:1;}
 .bdg-name{font-size:9px;font-weight:700;margin-top:3px;line-height:1.25;color:var(--text);}
 .lvl-badge{display:inline-flex;align-items:center;gap:5px;background:var(--hdr);color:#FFB347;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:12px;}
+.mark-done-bar{background:rgba(255,255,255,.06);border:1.5px dashed rgba(255,255,255,.2);border-radius:12px;padding:10px 14px;margin:0 14px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.mark-done-txt{font-size:12px;color:var(--muted);}
+.mark-done-btn{background:#374151;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
 
 /* BADGE MODAL */
 .bdg-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:24px;}
@@ -618,10 +621,10 @@ function computeAllStats() {
     if(isWk){g.weekDrills+=gDrills;g.weekShots+=gShots;g.weekFTs+=gFTs;if(gDrills>0)g.weekDays++;}
     // Devin
     dv.totalDrills+=dDrills; dv.totalLaps+=dLaps;
-    dv.pts+=dDrills*10 + (dd['challenge_devin_xp']||0);
+    dv.pts+=dDrills*10 + dLaps*5 + (dd['challenge_devin_xp']||0); // 5 XP per lap
     if(dLaps>dv.maxLaps)dv.maxLaps=dLaps;
-    if(dDrills>0){dv.daysWorked++;if(isTrk)dv.trackDays++;}
-    if(isWk){dv.weekDrills+=dDrills;dv.weekLaps+=dLaps;if(dDrills>0)dv.weekDays++;}
+    if(dDrills>0||dLaps>0){dv.daysWorked++;if(isTrk)dv.trackDays++;}  // laps count as a session
+    if(isWk){dv.weekDrills+=dDrills;dv.weekLaps+=dLaps;if(dDrills>0||dLaps>0)dv.weekDays++;}
   }
   // Streaks computed separately with Sunday-skip logic
   g.streak  = computeStreak('grayson', history);
@@ -1194,8 +1197,19 @@ function renderMain() {
     ${(!gOnly && totalLapGoal) ? `<div class="ds-stat"><div class="ds-val" style="color:#6EE7B7">${totalLaps}/${totalLapGoal}</div><div class="ds-lbl">⚽ Laps</div></div>` : ''}
   </div>`;
 
+  // "Mark All Done" bar — past days only
+  const todayIdx = getTodayIdx();
+  if (state.day !== todayIdx) {
+    const kid = dOnly ? 'devin' : 'grayson';
+    const kidLabel = dOnly ? 'Devin' : 'Grayson';
+    html += `<div class="mark-done-bar">
+      <div class="mark-done-txt">Missed logging this day? Give ${kidLabel} full credit.</div>
+      <button class="mark-done-btn" onclick="markAllDone('${day.key}','${kid}')">✅ Mark All Done</button>
+    </div>`;
+  }
+
   // Daily challenge cards (today only)
-  if (state.day === getTodayIdx()) {
+  if (state.day === todayIdx) {
     if (gOnly)  html += renderChallengeCard('grayson');
     if (dOnly)  html += renderChallengeCard('devin');
   }
@@ -1375,6 +1389,35 @@ function showBadgeModalFull(id, earned) {
   showBadgeModal(id);
 }
 function closeBadgeModal() { document.getElementById('bdg-modal').style.display = 'none'; }
+
+// ── MARK ALL DONE (past days) ─────────────────
+function markAllDone(dayKey, kid) {
+  const sessions = schedule[dayKey] || [];
+  for (const sess of sessions) {
+    const data = sess[kid];
+    if (!data || !data.blocks) continue;
+    data.blocks.forEach(function(b, i) {
+      const key = ck(dayKey, sess.id, kid, i);
+      state.checks[key] = true;
+      // auto-credit makes
+      const makesTag = b.tags && b.tags.find(function(t){ return /^\d+\s+makes/.test(t); });
+      const makes = makesTag ? parseInt(makesTag) : 0;
+      if (makes > 0) {
+        if (b.isFT) { const fk2 = ftk(dayKey,sess.id,kid); state.fts[fk2] = (state.fts[fk2]||0)+makes; }
+        else        { const sk2 = sk(dayKey,sess.id,kid);  state.shots[sk2]= (state.shots[sk2]||0)+makes; }
+      }
+    });
+    // auto-credit laps
+    if (kid === 'devin' && data.lapGoal) {
+      const lkey = lk(dayKey, sess.id, kid);
+      if (!(state.laps[lkey] > 0)) state.laps[lkey] = data.lapGoal;
+    }
+  }
+  saveToday();
+  checkPersonalRecords();
+  checkLevelUp();
+  render();
+}
 
 // ── INTERACTIONS ─────────────────────────────
 function setView(v) { state.view=v; render(); window.scrollTo({top:0,behavior:'smooth'}); }
