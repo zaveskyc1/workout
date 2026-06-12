@@ -901,6 +901,22 @@ function logLapTime() {
     }
   }
   saveRecords(records);
+
+  // Also increment the lap counter for the current day's Devin lap session
+  const lapDay = DAYS[state.day];
+  if (lapDay && !lapDay.rest) {
+    const lapSessions = schedule[lapDay.key] || [];
+    for (const lapSess of lapSessions) {
+      const lapData = lapSess['devin'];
+      if (lapData && lapData.lapGoal) {
+        const lapKey = lk(lapDay.key, lapSess.id, 'devin');
+        state.laps[lapKey] = Math.min((state.laps[lapKey]||0)+1, lapData.lapGoal);
+        saveCurrent();
+        break;
+      }
+    }
+  }
+
   input.value = '';
   render();
 }
@@ -1495,7 +1511,51 @@ function addFTs(k,n,goal)   { if(n===-999){state.fts[k]=0;}else{state.fts[k]=Mat
 function addLap(k,goal)     { state.laps[k]=Math.min((state.laps[k]||0)+1,goal); saveToday(); checkPersonalRecords(); checkLevelUp(); render(); }
 function resetLap(k)        { state.laps[k]=0; saveToday(); render(); }
 
+// ── CATCH-UP: auto-fill all past weekdays this week (Tue → yesterday) ────
+function autoFillPastWeek() {
+  const history = getHistory();
+  const todayIdx = getTodayIdx();
+  const today = new Date();
+  // Iterate Mon(0) through yesterday — skip today and Sunday(rest)
+  for (let dayIdx = 0; dayIdx < todayIdx; dayIdx++) {
+    const day = DAYS[dayIdx];
+    if (!day || day.rest) continue;
+    // Compute calendar date for this day index
+    const diff = dayIdx - todayIdx;
+    const d = new Date();
+    d.setDate(d.getDate() + diff);
+    const dateKey = d.toISOString().split('T')[0];
+    // Skip if we already have check data for this day
+    const existing = history[dateKey];
+    if (existing && Object.keys(existing.checks || {}).length > 0) continue;
+    // Build a full "all done" entry
+    const entry = { checks: {}, shots: {}, fts: {}, laps: {} };
+    const sessions = schedule[day.key] || [];
+    for (const sess of sessions) {
+      for (const kid of ['grayson', 'devin']) {
+        const data = sess[kid];
+        if (!data || !data.blocks) continue;
+        data.blocks.forEach(function(b, i) {
+          entry.checks[ck(day.key, sess.id, kid, i)] = true;
+          const makesTag = b.tags && b.tags.find(function(t){ return /^\d+\s+makes/.test(t); });
+          const makes = makesTag ? parseInt(makesTag) : 0;
+          if (makes > 0) {
+            if (b.isFT) { const fk2 = ftk(day.key, sess.id, kid); entry.fts[fk2]  = (entry.fts[fk2]||0)  + makes; }
+            else        { const sk2 = sk(day.key,  sess.id, kid);  entry.shots[sk2] = (entry.shots[sk2]||0) + makes; }
+          }
+        });
+        if (kid === 'devin' && data.lapGoal) {
+          entry.laps[lk(day.key, sess.id, kid)] = data.lapGoal;
+        }
+      }
+    }
+    history[dateKey] = entry;
+  }
+  try { localStorage.setItem('workout_v1', JSON.stringify(history)); } catch(e) {}
+}
+
 // ── INIT ─────────────────────────────────────
+autoFillPastWeek();         // pre-fill Mon–yesterday with "all done" if no data exists
 state.day = getTodayIdx();
 loadSelectedDay(state.day); // load today's history into state
 initCompletedSessions();    // mark already-done sessions so no false-positive celebrations on load
