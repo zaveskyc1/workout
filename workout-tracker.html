@@ -675,8 +675,9 @@ function computeAllStats() {
 const ALL_BADGES = [
   // Shared
   { id:'first',     kid:'both',    emoji:'🏁', name:'First Day!',     how:'Show up and complete your very first workout session. Today is the day!',                    check:(s)=>s.daysWorked>=1 },
-  { id:'streak3',   kid:'both',    emoji:'🔥', name:'On Fire',        how:'Work out 3 days in a row without skipping a day. Consistency is everything!',               check:(s)=>s.streak>=3 },
-  { id:'streak7',   kid:'both',    emoji:'💥', name:'Week Warrior',   how:'Work out for 7 days in a row — Sundays off don\'t break your streak, so keep going Mon–Sat and beyond!', check:(s)=>s.streak>=7 },
+  // Streak badges are Grayson-only — Devin trains Tue/Thu/Sat so Wed always breaks a streak
+  { id:'streak3',   kid:'grayson', emoji:'🔥', name:'On Fire',        how:'Work out 3 days in a row without skipping a day. Consistency is everything!',               check:(s)=>s.streak>=3 },
+  { id:'streak7',   kid:'grayson', emoji:'💥', name:'Week Warrior',   how:'Work out for 7 days in a row — Sundays off don\'t break your streak, so keep going Mon–Sat and beyond!', check:(s)=>s.streak>=7 },
   { id:'days10',    kid:'both',    emoji:'📅', name:'10 Sessions',    how:'Complete 10 total workout sessions this summer. Keep showing up!',                           check:(s)=>s.daysWorked>=10 },
   { id:'days30',    kid:'both',    emoji:'💯', name:'30 Sessions',    how:'Complete 30 total workout sessions. That\'s a whole month of hard work!',                    check:(s)=>s.daysWorked>=30 },
   { id:'days60',    kid:'both',    emoji:'🏆', name:'Summer Champ',   how:'Complete 60 sessions across the entire summer. Only the most dedicated earn this one.',      check:(s)=>s.daysWorked>=60 },
@@ -691,7 +692,7 @@ const ALL_BADGES = [
   { id:'gtrack5',   kid:'grayson', emoji:'🏃', name:'Track Regular',  how:'Complete 5 track sessions total. Consistency at the track makes your handles elite.',        check:(s)=>s.trackDays>=5 },
   { id:'gtrack10',  kid:'grayson', emoji:'🏃', name:'Track Beast',    how:'Complete 10 track sessions this summer. You\'re putting in the work most players skip!',    check:(s)=>s.trackDays>=10 },
   // Devin — more frequent milestones so he's always close to the next badge
-  { id:'dsoccer1',  kid:'devin',   emoji:'⚽', name:'Kick It!',       how:'Complete your very first soccer fun session. Grab the ball and get going!',                         check:(s)=>s.daysWorked>=1 },
+  { id:'dsoccer1',  kid:'devin',   emoji:'⚽', name:'Kick It!',       how:'Complete your very first workout session — soccer or track, it all counts. Today is the day!',       check:(s)=>s.daysWorked>=1 },
   { id:'ddrills10', kid:'devin',   emoji:'✅', name:'10 Drills',      how:'Check off 10 drills total. Soccer and track both count — keep tapping those checkboxes!',           check:(s)=>s.totalDrills>=10 },
   { id:'dtrack1',   kid:'devin',   emoji:'🏃', name:'Track Debut',    how:'Show up for your first track session on a Tuesday, Thursday, or Saturday!',                         check:(s)=>s.trackDays>=1 },
   { id:'dlaps4',    kid:'devin',   emoji:'💨', name:'First 4 Laps',   how:'Run 4 laps in a single track session — halfway to the full goal!',                                  check:(s)=>s.maxLaps>=4 },
@@ -703,6 +704,9 @@ const ALL_BADGES = [
   { id:'dtrack5',   kid:'devin',   emoji:'🏃', name:'Track Regular',  how:'Come to 5 track sessions. Runners are made by showing up again and again!',                          check:(s)=>s.trackDays>=5 },
   { id:'dlaps50',   kid:'devin',   emoji:'🔥', name:'Lap Legend',     how:'Run 50 total laps across all your track days. That\'s a LOT of running — elite endurance!',         check:(s)=>s.totalLaps>=50 },
   { id:'ddrills100',kid:'devin',   emoji:'👑', name:'100 Drills',     how:'Complete 100 drills total this summer. If you hit this one, you\'re an absolute legend!',            check:(s)=>s.totalDrills>=100 },
+  // Track-week streaks for Devin (replaces daily streak — his schedule is Tue/Thu/Sat)
+  { id:'dtrack2wk', kid:'devin',   emoji:'🔥', name:'Double Down',    how:'Complete 2 or more track sessions in a single week — Tuesday, Thursday, and/or Saturday all count!',   check:(s)=>s.weekDays>=2 },
+  { id:'dtrack3wk', kid:'devin',   emoji:'💥', name:'Full Track Week', how:'Hit all 3 track sessions in one week — Tuesday, Thursday, AND Saturday. That\'s a full training week!', check:(s)=>s.weekDays>=3 },
 ];
 function getBadges(kid, stats) {
   return ALL_BADGES
@@ -1103,6 +1107,8 @@ const BADGE_PROGRESS = {
   'dtrack5':    function(s){ return s.trackDays+'/5 track days'; },
   'dlaps50':    function(s){ return s.totalLaps+'/50 total laps'; },
   'ddrills100': function(s){ return s.totalDrills+'/100 drills'; },
+  'dtrack2wk':  function(s){ return s.weekDays+'/2 track days this week'; },
+  'dtrack3wk':  function(s){ return s.weekDays+'/3 track days this week'; },
 };
 
 // ── RENDER STATS ──────────────────────────────
@@ -1431,7 +1437,6 @@ function endBadgePress() { clearTimeout(_pressTimer); }
 function showBadgeModal(id) {
   const b = ALL_BADGES.find(x => x.id === id);
   if (!b) return;
-  const earned = b.check ? false : false; // we pass earned flag via data attr
   document.getElementById('bm-icon').textContent = b.emoji;
   document.getElementById('bm-name').textContent = b.name;
   document.getElementById('bm-how').textContent = b.how;
@@ -1525,11 +1530,11 @@ function addLap(k,goal)     { state.laps[k]=Math.min((state.laps[k]||0)+1,goal);
 function resetLap(k)        { state.laps[k]=0; saveToday(); render(); }
 
 // ── CATCH-UP: auto-fill past weekdays with accurate history ──────────────
-// Rules:
-//   Monday  (idx 0): clear entirely — neither kid worked out Monday
-//   Tue–yesterday  : Grayson gets ALL sessions filled
-//                    Devin gets ONLY track sessions (isTrack:true) — he hasn't done soccer yet
-// Always overwrites so stale partial data gets corrected on each deploy.
+// Runs every page load. Fills Tue (idx 1) through yesterday.
+//   Grayson: ALL sessions
+//   Devin:   ONLY track sessions (isTrack:true) — soccer not yet started
+// Monday is intentionally skipped — if they log it manually, that data persists.
+// Always overwrites so stale/partial data gets corrected on each deploy.
 function autoFillPastWeek() {
   const history = getHistory();
   const todayIdx = getTodayIdx();
@@ -1541,17 +1546,7 @@ function autoFillPastWeek() {
     return localDateStr(d);
   }
 
-  // Step 1: Clear Monday entirely (neither kid worked out)
-  const mondayKey = dateForIdx(0);
-  const mondayEx  = history[mondayKey] || {};
-  history[mondayKey] = { checks:{}, shots:{}, fts:{}, laps:{} };
-  // Preserve any challenge data that may have been tapped
-  if (mondayEx['challenge_grayson'])    history[mondayKey]['challenge_grayson']    = mondayEx['challenge_grayson'];
-  if (mondayEx['challenge_grayson_xp']) history[mondayKey]['challenge_grayson_xp'] = mondayEx['challenge_grayson_xp'];
-  if (mondayEx['challenge_devin'])      history[mondayKey]['challenge_devin']      = mondayEx['challenge_devin'];
-  if (mondayEx['challenge_devin_xp'])   history[mondayKey]['challenge_devin_xp']   = mondayEx['challenge_devin_xp'];
-
-  // Step 2: Fill Tuesday (idx 1) through yesterday
+  // Fill Tuesday (idx 1) through yesterday
   for (let dayIdx = 1; dayIdx < todayIdx; dayIdx++) {
     const day = DAYS[dayIdx];
     if (!day || day.rest) continue;
