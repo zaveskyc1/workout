@@ -564,6 +564,10 @@ function loadSelectedDay(dayIdx) {
     Object.assign(state.fts,    d.fts||{});
     Object.assign(state.laps,   d.laps||{});
   }
+  // Fix: if all drills are already checked but laps weren't logged, auto-fill them
+  autoFillLaps();
+  // Persist the fix so stats pick it up immediately
+  saveCurrent();
 }
 // Legacy alias
 function loadToday() { loadSelectedDay(state.day); }
@@ -1454,6 +1458,23 @@ function switchDay(i) {
   render();
   window.scrollTo({top:0,behavior:'smooth'});
 }
+// Auto-fill Devin's laps to lapGoal when all drills in a lap session are done.
+// Only fires if laps haven't been manually set yet (still 0).
+function autoFillLaps() {
+  const day = DAYS[state.day];
+  if (!day || day.rest) return;
+  const sessions = schedule[day.key] || [];
+  for (const sess of sessions) {
+    const data = sess['devin'];
+    if (!data || !data.lapGoal || !data.blocks || !data.blocks.length) continue;
+    const allDone = data.blocks.every(function(_,i){ return state.checks[ck(day.key,sess.id,'devin',i)]; });
+    if (allDone) {
+      const lapKey = lk(day.key, sess.id, 'devin');
+      if (!(state.laps[lapKey] > 0)) state.laps[lapKey] = data.lapGoal;
+    }
+  }
+}
+
 function toggleCheck(k, makes, shotKey, isFT) {
   const wasChecked = state.checks[k];
   state.checks[k] = !wasChecked;
@@ -1462,7 +1483,8 @@ function toggleCheck(k, makes, shotKey, isFT) {
     if (isFT) { state.fts[shotKey] = Math.max(0,(state.fts[shotKey]||0)+delta); }
     else       { state.shots[shotKey] = Math.max(0,(state.shots[shotKey]||0)+delta); }
   }
-  saveToday();
+  autoFillLaps(); // auto-credit laps when all drills are checked
+  saveCurrent();
   checkPersonalRecords();
   checkSessionCompletes();
   checkLevelUp();
