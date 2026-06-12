@@ -525,17 +525,25 @@ const schedule = {
 const state = { day:0, checks:{}, shots:{}, laps:{}, fts:{}, view:'grayson' }; // view: 'grayson'|'devin'|'stats'
 
 // ── PERSISTENCE ───────────────────────────────
-function getDateKey() { return new Date().toISOString().split('T')[0]; }
-function getHistory() { try { return JSON.parse(localStorage.getItem('workout_v1')||'{}'); } catch(e){ return {}; } }
+// Always use LOCAL date strings (YYYY-MM-DD) — toISOString() is UTC and causes
+// keys to shift after 6-7pm in US timezones, breaking persistence.
+function localDateStr(d) {
+  const dd = d || new Date();
+  return dd.getFullYear() + '-'
+    + String(dd.getMonth()+1).padStart(2,'0') + '-'
+    + String(dd.getDate()).padStart(2,'0');
+}
+function getDateKey() { return localDateStr(new Date()); }
+// workout_v2: local-date keys (v1 used UTC — wiped intentionally to clear stale data)
+function getHistory() { try { return JSON.parse(localStorage.getItem('workout_v2')||'{}'); } catch(e){ return {}; } }
 
 // Returns the real calendar date (YYYY-MM-DD) for a given day-tab index.
 // Anchored to this week so Mon=this Monday, Tue=this Tuesday, etc.
 function getDateKeyForDayIdx(dayIdx) {
   const todayIdx = getTodayIdx();
-  const diff = dayIdx - todayIdx;
   const d = new Date();
-  d.setDate(d.getDate() + diff);
-  return d.toISOString().split('T')[0];
+  d.setDate(d.getDate() + (dayIdx - todayIdx));
+  return localDateStr(d);  // local date — no UTC shift
 }
 
 // Save current state to the SELECTED day's calendar date (not always "today").
@@ -544,7 +552,7 @@ function saveCurrent() {
     const dateKey = getDateKeyForDayIdx(state.day);
     const h = getHistory();
     h[dateKey] = { checks:{...state.checks}, shots:{...state.shots}, fts:{...state.fts}, laps:{...state.laps} };
-    localStorage.setItem('workout_v1', JSON.stringify(h));
+    localStorage.setItem('workout_v2', JSON.stringify(h));
   } catch(e){}
 }
 // Keep saveToday as alias so challenge code still works
@@ -606,20 +614,23 @@ function getLevel(pts, kid) {
 // ── ALL-TIME STATS ────────────────────────────
 function getWeekStart() {
   const d = new Date(); const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(new Date().setDate(diff)).toISOString().split('T')[0];
+  d.setDate(d.getDate() - day + (day === 0 ? -6 : 1));
+  return localDateStr(d);  // local date
 }
 function isTrackDate(ds) {
+  // Parse local date string — add T12:00 so no timezone shift flips the day
   const dow = new Date(ds + 'T12:00:00').getDay(); return dow===2||dow===4||dow===6;
 }
 function isSunday(ds) { return new Date(ds + 'T12:00:00').getDay() === 0; }
 function computeStreak(kid, history) {
   const today = getDateKey();
   const todayDrills = Object.entries(history[today]?.checks||{}).filter(([k,v])=>k.includes(`-${kid}-`)&&v).length;
-  const start = new Date((todayDrills > 0 ? today : (() => { const d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().split('T')[0]; })()) + 'T12:00:00');
-  let streak = 0, cur = new Date(start), safety = 0;
+  // Start from today if worked, otherwise yesterday
+  const startD = new Date();
+  if (!todayDrills) startD.setDate(startD.getDate()-1);
+  let streak = 0, cur = new Date(startD), safety = 0;
   while (safety++ < 400) {
-    const ds = cur.toISOString().split('T')[0];
+    const ds = localDateStr(cur);  // local date — consistent with storage keys
     if (isSunday(ds)) { cur.setDate(cur.getDate()-1); continue; } // skip rest day
     const drills = Object.entries(history[ds]?.checks||{}).filter(([k,v])=>k.includes(`-${kid}-`)&&v).length;
     if (drills > 0) { streak++; cur.setDate(cur.getDate()-1); }
@@ -985,7 +996,7 @@ function completeChallenge(kid) {
   if (!h[dateKey]) h[dateKey] = { checks:{}, shots:{}, fts:{}, laps:{} };
   h[dateKey]['challenge_'+kid] = true;
   h[dateKey]['challenge_'+kid+'_xp'] = c.xp;
-  try { localStorage.setItem('workout_v1', JSON.stringify(h)); } catch(e){}
+  try { localStorage.setItem('workout_v2', JSON.stringify(h)); } catch(e){}
   launchConfetti(2000);
   checkLevelUp();
   render();
@@ -1523,11 +1534,11 @@ function autoFillPastWeek() {
   const history = getHistory();
   const todayIdx = getTodayIdx();
 
-  // Helper to build date key for a given day index
+  // Helper to build date key for a given day index (local date — matches storage keys)
   function dateForIdx(idx) {
     const d = new Date();
     d.setDate(d.getDate() + (idx - todayIdx));
-    return d.toISOString().split('T')[0];
+    return localDateStr(d);
   }
 
   // Step 1: Clear Monday entirely (neither kid worked out)
@@ -1593,7 +1604,7 @@ function autoFillPastWeek() {
     }
     history[dateKey] = entry;
   }
-  try { localStorage.setItem('workout_v1', JSON.stringify(history)); } catch(e) {}
+  try { localStorage.setItem('workout_v2', JSON.stringify(history)); } catch(e) {}
 }
 
 // ── INIT ─────────────────────────────────────
