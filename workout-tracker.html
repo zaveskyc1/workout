@@ -1551,8 +1551,109 @@ function addFTs(k,n,goal)   { if(n===-999){state.fts[k]=0;}else{state.fts[k]=Mat
 function addLap(k,goal)     { state.laps[k]=Math.min((state.laps[k]||0)+1,goal); saveToday(); checkPersonalRecords(); checkLevelUp(); render(); }
 function resetLap(k)        { state.laps[k]=0; saveToday(); render(); }
 
+// ── STORAGE MIGRATION ────────────────────────
+// On first load of v3, preserve only TODAY's real data from v2.
+// Past v2 data was auto-filled (fake) — we don't bring it forward.
+// seedLegacyData() below then credits the confirmed real past sessions.
+function migrateStorage() {
+  try {
+    const v3 = localStorage.getItem('workout_v3');
+    if (!v3 || v3 === '{}') {
+      const v2raw = localStorage.getItem('workout_v2');
+      if (v2raw) {
+        const v2 = JSON.parse(v2raw);
+        const today = getDateKey();
+        const migrated = {};
+        if (v2[today]) migrated[today] = v2[today]; // keep only today's logged data
+        localStorage.setItem('workout_v3', JSON.stringify(migrated));
+      }
+    }
+  } catch(e) {}
+}
+
+// ── LEGACY SEED ──────────────────────────────
+// Seeds confirmed real past achievements so kids see accurate stats on first load.
+// Runs on every load but skips any date that already has logged data — safe to call repeatedly.
+//   Grayson: 8 confirmed basketball sessions (Mon/Wed/Fri skills days)
+//   Devin:   5 confirmed track sessions     (Tue/Thu/Sat)
+function seedLegacyData() {
+  const history = getHistory();
+  let changed = false;
+
+  // Grayson — 8 skills-day sessions (June 1 = Monday, 4 weeks before today June 29)
+  const G_PAST = [
+    { date:'2026-06-01', dayKey:'monday'    },
+    { date:'2026-06-03', dayKey:'wednesday' },
+    { date:'2026-06-05', dayKey:'friday'    },
+    { date:'2026-06-08', dayKey:'monday'    },
+    { date:'2026-06-10', dayKey:'wednesday' },
+    { date:'2026-06-12', dayKey:'friday'    },
+    { date:'2026-06-15', dayKey:'monday'    },
+    { date:'2026-06-17', dayKey:'wednesday' },
+  ];
+  for (const s of G_PAST) {
+    const e = history[s.date] || { checks:{}, shots:{}, fts:{}, laps:{} };
+    const hasG = Object.entries(e.checks||{}).some(([k,v]) => k.includes('-grayson-') && v);
+    if (!hasG) {
+      // 6 blocks: warmup(shots), shifty, ballProtect, passing, pullup(shots), FT
+      for (let i = 0; i < 6; i++) e.checks[s.dayKey+'-skills-grayson-'+i] = true;
+      e.shots = e.shots||{}; e.shots[s.dayKey+'-skills-grayson'] = 60; // 30 warmup + 30 pull-up
+      e.fts   = e.fts  ||{}; e.fts  [s.dayKey+'-skills-grayson'] = 40; // FT block
+      history[s.date] = e;
+      changed = true;
+    }
+  }
+
+  // Grayson — 5 track sessions same Tue/Thu/Sat dates as Devin
+  // gTrack75 = 7 blocks (Tue/Thu), gTrackSat = 9 blocks (Sat)
+  const G_TRACK = [
+    { date:'2026-06-02', dayKey:'tuesday',  sessId:'eve',  nBlocks:7 },
+    { date:'2026-06-04', dayKey:'thursday', sessId:'eve',  nBlocks:7 },
+    { date:'2026-06-06', dayKey:'saturday', sessId:'morn', nBlocks:9 },
+    { date:'2026-06-09', dayKey:'tuesday',  sessId:'eve',  nBlocks:7 },
+    { date:'2026-06-11', dayKey:'thursday', sessId:'eve',  nBlocks:7 },
+  ];
+  for (const s of G_TRACK) {
+    const e = history[s.date] || { checks:{}, shots:{}, fts:{}, laps:{} };
+    const hasG = Object.entries(e.checks||{}).some(([k,v]) => k.includes('-grayson-') && v);
+    if (!hasG) {
+      for (let i = 0; i < s.nBlocks; i++) e.checks[s.dayKey+'-'+s.sessId+'-grayson-'+i] = true;
+      // No shots/FTs on track days — all drills
+      history[s.date] = e;
+      changed = true;
+    }
+  }
+
+  // Devin — 5 track sessions (Tue/Thu/Sat starting June 2)
+  const D_PAST = [
+    { date:'2026-06-02', dayKey:'tuesday',  sessId:'eve'  },
+    { date:'2026-06-04', dayKey:'thursday', sessId:'eve'  },
+    { date:'2026-06-06', dayKey:'saturday', sessId:'morn' },
+    { date:'2026-06-09', dayKey:'tuesday',  sessId:'eve'  },
+    { date:'2026-06-11', dayKey:'thursday', sessId:'eve'  },
+  ];
+  for (const s of D_PAST) {
+    const e = history[s.date] || { checks:{}, shots:{}, fts:{}, laps:{} };
+    const hasD = Object.entries(e.checks||{}).some(([k,v]) => k.includes('-devin-') && v) ||
+                 Object.entries(e.laps ||{}).some(([k,v]) => k.includes('devin')    && v > 0);
+    if (!hasD) {
+      // 8 drill blocks + full 8 laps
+      for (let i = 0; i < 8; i++) e.checks[s.dayKey+'-'+s.sessId+'-devin-'+i] = true;
+      e.laps = e.laps||{}; e.laps[s.dayKey+'-'+s.sessId+'-devin'] = 8;
+      history[s.date] = e;
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    try { localStorage.setItem('workout_v3', JSON.stringify(history)); } catch(e2) {}
+  }
+}
+
 // ── INIT ─────────────────────────────────────
 // No auto-fill — only manually logged data counts.
+migrateStorage();    // preserve today's real sessions from v2
+seedLegacyData();    // credit confirmed past achievements (8 G skills + 5 G track + 5 D track days)
 state.day = getTodayIdx();
 loadSelectedDay(state.day); // load today's history into state
 initCompletedSessions();    // mark already-done sessions so no false-positive celebrations on load
