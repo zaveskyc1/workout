@@ -267,7 +267,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="hdr-top">
     <div>
       <div class="hdr-title">☀️ Summer Workout 2026</div>
-      <div class="hdr-sub" id="hdr-sub">🏀 Grayson (10) &nbsp;·&nbsp; ⚽ Devin (6)</div>
+      <div class="hdr-sub" id="hdr-sub">🏀 Grayson (10) &nbsp;·&nbsp; 🏃 Devin (6)</div>
     </div>
     <div class="hdr-prog">
       <div class="hdr-prog-num" id="hdr-pct">0%</div>
@@ -277,7 +277,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="view-toggle-wrap">
     <button class="vtbtn vtbtn-g" id="vt-g" onclick="setView('grayson')">🏀 Grayson</button>
-    <button class="vtbtn vtbtn-d inactive" id="vt-d" onclick="setView('devin')">⚽ Devin</button>
+    <button class="vtbtn vtbtn-d inactive" id="vt-d" onclick="setView('devin')">🏃 Devin</button>
     <button class="vtbtn vtbtn-s inactive" id="vt-s" onclick="setView('stats')">🏆 Stats</button>
   </div>
   <div class="tabs" id="tabs"></div>
@@ -391,6 +391,7 @@ function gEvening(f) {
       { label:'Mikan Drill Warmup', detail:'Alternate sides under basket continuously — no stopping, soft touch', tags:['20 makes','3 min'] },
       { label: featured.label + ' ★ Featured', detail: featured.detail + ' Evening version: push max game speed.', tags: featured.tags },
       { label:'Ball Screen Simulation', detail:'Hard dribble to elbow as if peeling off a screen — shoot the mid-range every time', tags:['40 makes','8 min'] },
+      passingDrills,
       { label:'Drive & Kick Simulation', detail:'Aggressive drive → kick to corner → relocate → game-speed catch → shoot', tags:['30 makes','7 min'] },
       { label:'1-on-1 vs Dad 💪', detail:'Full defensive pressure. Goal: hold off bigger defenders, protect the ball, create space for your shot', tags:['25+ makes','14 min'] },
       { label:'🎯 Free Throws — FINISH STRONG', detail:'Full routine every shot. Simulate end-of-game pressure — game on the line.', tags:['50 makes','10 min'], isFT: true },
@@ -398,19 +399,27 @@ function gEvening(f) {
   };
 }
 
-// Devin soccer — one flexible session, do whenever (morning or evening)
-const devinSoccer = {
-  title: 'Soccer Fun — Do Whenever!',
-  note: '⚽ Morning or evening, your call',
-  blocks: [
-    { label:'🚦 Red Light / Green Light', detail:'"Green light" = dribble forward. "Red light!" = stop the ball with your foot on top. 3 rounds!', tags:['4 min'] },
-    { label:'Cone Dribbling Maze', detail:'6 cones in a zigzag — weave around each one without knocking them over. Try to go faster every round! 4 rounds.', tags:['4 min'] },
-    { label:'Soccer Bowling 🎳', detail:'Stack 3–4 cones in a tower. Kick the ball to knock them down from 10 feet away. Reset and go again — 10 kicks total!', tags:['4 min'] },
-    { label:'Toe Tap Fast Feet', detail:'Put one foot on top of the ball, switch feet as fast as you can — like running in place on the ball! Count to 30.', tags:['3 min'] },
-    { label:'🎯 Kick at a Target', detail:'Tape or draw an X on the wall or fence. Kick from 10 feet — how many times can you hit it in 15 kicks?', tags:['5 min'] },
-    { label:'New Move of the Week', detail:'This week\'s move: Step-Over — swing one foot over the ball to fake, then go the other way. Try 10 times each side!', tags:['5 min'] },
-    { label:'Kick & Chase', detail:'Kick the ball as far as you can, then sprint after it! Trap it with your foot when you catch up. 6 kicks each foot.', tags:['4 min'] },
-  ]
+// ── NEW SKILL DRILLS (from video sessions) ────────────────────────────────
+
+// Shifty Dribbling — low-stance change-of-direction speed work
+const shiftyDribble = {
+  label: 'Shifty Dribble Series',
+  detail: 'Stay low, weight on toes the whole time. 4 rounds × 30 sec on / 15 sec rest:\n① In-&-Out — push out with fingertips, snap back, 10 each hand\n② Crossover + retreat dribble — attack hard, retreat fast, stay low\n③ Hesitation "hesi" — sell the drive with your eyes, freeze defender, explode × 10 each direction\n④ Behind-the-back change of direction × 10\nFocus: snap every dribble, explode out of every change.',
+  tags: ['4 rounds', '10 min'],
+};
+
+// Ball Protection — shielding under defensive pressure
+const ballProtection = {
+  label: 'Ball Protection Circuit',
+  detail: 'Dad applies active hand pressure the entire time. 3 rounds:\n① Low pound dribble × 20 — use your body to shield, don\'t reach away from pressure\n② Speed dribble down lane, dad bumps from the side — absorb contact, keep the ball\n③ Post-up catch: receive pass near baseline, pivot away from pressure, create your shot\nFocus: body between defender and ball at all times.',
+  tags: ['3 rounds', '10 min'],
+};
+
+// Passing — chest, bounce, overhead, one-hand push
+const passingDrills = {
+  label: '🎯 Passing & Receiving',
+  detail: 'With dad 12–15 feet apart. 15 reps × 4 types:\n① Chest pass — step in, thumbs point down on release, snap the wrists\n② Bounce pass — aim 2/3 of the way, low and hard\n③ Overhead skip pass — fake one direction, throw the other\n④ One-hand push pass — right then left, game-speed release at chest height\nFocus: always step toward your target, call "ball!" when you\'re ready to receive.',
+  tags: ['60 total reps', '10 min'],
 };
 
 // Grayson track (75-min, Tue/Thu) — morning already did shooting so NO FT here
@@ -420,23 +429,25 @@ const gTrack75 = {
     { label:'Dynamic Warmup', detail:'High knees · Butt kicks · Leg swings front & side · Arm circles · Ankle hops', tags:['5 min'] },
     { label:'Lap Circuit — Set 1', detail:'2 laps: Dribble THROUGH LEGS on every TURN · Sprint straight-aways with ball in hand', tags:['2 laps','12 min'] },
     { label:'Ladder Drills — Round 1', detail:'5 reps each:\n① Crossover\n② Through the legs, behind the back\n③ Double through legs\n④ Double behind the back\n⑤ Crossover, through legs & behind back combo', tags:['5 reps each','10 min'] },
+    shiftyDribble,
     { label:'Lap Circuit — Set 2', detail:'2 laps — push harder than Set 1, keep the ball tight', tags:['2 laps','12 min'] },
-    { label:'Zig Zag Pressure Dribble', detail:'4 × 100m zig zag between two lanes — dad applies active hand pressure. Hold strong!', tags:['4 reps','12 min'] },
+    ballProtection,
     { label:'Cool Down Stretch', detail:'Quad · Hamstring · Hip flexor · Calf — hold 30 sec each side', tags:['5 min'] },
   ]
 };
 
-// Grayson SATURDAY track (2 hrs) — replace old extended drills with better ones
+// Grayson SATURDAY track (2 hrs) — full extended session
 const gTrackSat = {
   title: 'Ball Handling & Agility — Extended',
   blocks: [
     { label:'Dynamic Warmup', detail:'High knees · Butt kicks · Leg swings · Arm circles · Ankle hops', tags:['5 min'] },
     { label:'Lap Circuit — Set 1', detail:'2 laps: Dribble through legs on turns · Sprint straight-aways with ball in hand', tags:['2 laps','12 min'] },
     { label:'Ladder Drills — Round 1', detail:'5 reps each:\n① Crossover\n② Through the legs, behind the back\n③ Double through legs\n④ Double behind the back\n⑤ Crossover, through legs & behind back combo', tags:['5 reps each','12 min'] },
+    shiftyDribble,
     { label:'Lap Circuit — Set 2', detail:'2 laps — push harder, keep ball moving', tags:['2 laps','12 min'] },
-    { label:'Zig Zag Pressure Dribble', detail:'4 × 100m zig zag with dad applying active defensive pressure', tags:['12 min'] },
-    { label:'Two-Ball Dribbling Circuit 🆕', detail:'Dribble TWO balls at once — 3 reps: straight jog down the straight, alternating (one high/one low), simultaneous crossovers. Builds both hands independently.', tags:['10 min'] },
-    { label:'Weak-Hand Lap Challenge 🆕', detail:'One full lap around the track — non-dominant hand ONLY. No switching allowed. Builds your off hand for real game situations.', tags:['1 lap','7 min'] },
+    ballProtection,
+    { label:'Two-Ball Dribbling Circuit', detail:'Dribble TWO balls at once — 3 reps: straight jog down the straight, alternating (one high/one low), simultaneous crossovers. Builds both hands independently.', tags:['10 min'] },
+    { label:'Weak-Hand Lap Challenge', detail:'One full lap around the track — non-dominant hand ONLY. No switching allowed. Builds your off hand for real game situations.', tags:['1 lap','7 min'] },
     { label:'Cool Down Stretch', detail:'Full body: quad, hamstring, hip flexor, calf, shoulder — 30 sec each', tags:['6 min'] },
   ]
 };
@@ -483,40 +494,51 @@ const dTrackSat = {
   ]
 };
 
+// Grayson skills day — one focused session (camp schedule, one workout/day)
+// Rotates focus Mon→Wed→Fri so each day feels fresh
+function gSkillsDay(f) {
+  const focus = ['Foundation — perfect form on every rep', 'Speed — push the pace on every drill', 'Competition — beat Monday\'s and Wednesday\'s marks'][f];
+  return {
+    title: 'Skills Practice',
+    note: '⚡ ' + focus,
+    shotGoal: 100,
+    blocks: [
+      { label:'Warmup — Layups & Catch & Shoot', detail:'Alternate sides under basket: layup each side × 10, then catch & shoot from 3 spots × 10 each. Stay loose and sharp.', tags:['30 makes','6 min'] },
+      shiftyDribble,
+      ballProtection,
+      passingDrills,
+      { label:'Pull-up Attack — Both Sides', detail:'1–2 hard dribbles from the top, pull up from elbow or mid-range. Attack left AND right equally — don\'t favor your strong hand.', tags:['30 makes','6 min'] },
+      { label:'🎯 Free Throws', detail:'Full routine every shot. Same arc, same release. Finish the session clean — imagine game on the line.', tags:['40 makes','7 min'], isFT: true },
+    ]
+  };
+}
+
 // ── SCHEDULE ─────────────────────────────────
+// Camp schedule: ONE session per day.
+// Mon/Wed/Fri = Skills Practice   Tue/Thu = Track   Sat = Extended Track
 const schedule = {
   monday: [
-    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
-      grayson: gMorning(0), devin: devinSoccer },
-    { id:'eve',  label:'🌆 Evening', time:'5:00 – 6:15pm', location:'Home Court',
-      grayson: gEvening(0) },
+    { id:'skills', label:'🏀 Skills Practice', time:'After camp', location:'Home Court',
+      grayson: gSkillsDay(0) },
   ],
   tuesday: [
-    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
-      grayson: gMorningTrackDay(1) },
-    { id:'eve',  label:'🏃 Evening Workout', time:'', location:'Local Track', isTrack:true,
+    { id:'eve',  label:'🏃 Track Session', time:'Evening', location:'Local Track', isTrack:true,
       grayson: gTrack75, devin: dTrack75 },
   ],
   wednesday: [
-    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
-      grayson: gMorning(2), devin: devinSoccer },
-    { id:'eve',  label:'🌆 Evening', time:'5:00 – 6:15pm', location:'Home Court',
-      grayson: gEvening(1) },
+    { id:'skills', label:'🏀 Skills Practice', time:'After camp', location:'Home Court',
+      grayson: gSkillsDay(1) },
   ],
   thursday: [
-    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
-      grayson: gMorningTrackDay(3) },
-    { id:'eve',  label:'🏃 Evening Workout', time:'', location:'Local Track', isTrack:true,
+    { id:'eve',  label:'🏃 Track Session', time:'Evening', location:'Local Track', isTrack:true,
       grayson: gTrack75, devin: dTrack75 },
   ],
   friday: [
-    { id:'morn', label:'☀️ Morning', time:'7:00 – 7:45am', location:'Home Court',
-      grayson: gMorning(4), devin: devinSoccer },
-    { id:'eve',  label:'🌆 Evening (Optional)', time:'5:00 – 6:15pm', location:'Home Court', optional:true,
-      grayson: gEvening(2) },
+    { id:'skills', label:'🏀 Skills Practice', time:'After camp', location:'Home Court',
+      grayson: gSkillsDay(2) },
   ],
   saturday: [
-    { id:'morn', label:'☀️ Morning', time:'', location:'Local Track', isTrack:true,
+    { id:'morn', label:'🏃 Track — Extended', time:'Morning', location:'Local Track', isTrack:true,
       grayson: gTrackSat, devin: dTrackSat },
   ],
 };
@@ -534,8 +556,8 @@ function localDateStr(d) {
     + String(dd.getDate()).padStart(2,'0');
 }
 function getDateKey() { return localDateStr(new Date()); }
-// workout_v2: local-date keys (v1 used UTC — wiped intentionally to clear stale data)
-function getHistory() { try { return JSON.parse(localStorage.getItem('workout_v2')||'{}'); } catch(e){ return {}; } }
+// workout_v3: local-date keys (v1 used UTC — wiped intentionally to clear stale data)
+function getHistory() { try { return JSON.parse(localStorage.getItem('workout_v3')||'{}'); } catch(e){ return {}; } }
 
 // Returns the real calendar date (YYYY-MM-DD) for a given day-tab index.
 // Anchored to this week so Mon=this Monday, Tue=this Tuesday, etc.
@@ -552,7 +574,7 @@ function saveCurrent() {
     const dateKey = getDateKeyForDayIdx(state.day);
     const h = getHistory();
     h[dateKey] = { checks:{...state.checks}, shots:{...state.shots}, fts:{...state.fts}, laps:{...state.laps} };
-    localStorage.setItem('workout_v2', JSON.stringify(h));
+    localStorage.setItem('workout_v3', JSON.stringify(h));
   } catch(e){}
 }
 // Keep saveToday as alias so challenge code still works
@@ -692,12 +714,12 @@ const ALL_BADGES = [
   { id:'gtrack5',   kid:'grayson', emoji:'🏃', name:'Track Regular',  how:'Complete 5 track sessions total. Consistency at the track makes your handles elite.',        check:(s)=>s.trackDays>=5 },
   { id:'gtrack10',  kid:'grayson', emoji:'🏃', name:'Track Beast',    how:'Complete 10 track sessions this summer. You\'re putting in the work most players skip!',    check:(s)=>s.trackDays>=10 },
   // Devin — more frequent milestones so he's always close to the next badge
-  { id:'dsoccer1',  kid:'devin',   emoji:'⚽', name:'Kick It!',       how:'Complete your very first workout session — soccer or track, it all counts. Today is the day!',       check:(s)=>s.daysWorked>=1 },
-  { id:'ddrills10', kid:'devin',   emoji:'✅', name:'10 Drills',      how:'Check off 10 drills total. Soccer and track both count — keep tapping those checkboxes!',           check:(s)=>s.totalDrills>=10 },
+  { id:'dsoccer1',  kid:'devin',   emoji:'🏃', name:'First Workout!', how:'Show up and complete your very first track session. Today is the day — lace up and go!',            check:(s)=>s.daysWorked>=1 },
+  { id:'ddrills10', kid:'devin',   emoji:'✅', name:'10 Drills',      how:'Check off 10 drills total. Every agility block and running drill counts — keep tapping!',             check:(s)=>s.totalDrills>=10 },
   { id:'dtrack1',   kid:'devin',   emoji:'🏃', name:'Track Debut',    how:'Show up for your first track session on a Tuesday, Thursday, or Saturday!',                         check:(s)=>s.trackDays>=1 },
   { id:'dlaps4',    kid:'devin',   emoji:'💨', name:'First 4 Laps',   how:'Run 4 laps in a single track session — halfway to the full goal!',                                  check:(s)=>s.maxLaps>=4 },
   { id:'dlaps8',    kid:'devin',   emoji:'🏆', name:'8 Laps!',        how:'Run all 8 laps in a single track session without stopping. You can do it — keep going!',             check:(s)=>s.maxLaps>=8 },
-  { id:'ddrills25', kid:'devin',   emoji:'⭐', name:'25 Drills',      how:'Check off 25 total drills. Soccer, track, everything counts — you\'re building up!',                 check:(s)=>s.totalDrills>=25 },
+  { id:'ddrills25', kid:'devin',   emoji:'⭐', name:'25 Drills',      how:'Check off 25 total drills. Every agility circuit and lap drill counts — you\'re building up!',     check:(s)=>s.totalDrills>=25 },
   { id:'dtrack3',   kid:'devin',   emoji:'🏃', name:'Track Habit',    how:'Come to 3 track sessions. You\'re starting to build a real running habit!',                          check:(s)=>s.trackDays>=3 },
   { id:'dlaps20',   kid:'devin',   emoji:'🦵', name:'20 Laps',        how:'Run 20 total laps across all your track days. That\'s some serious mileage!',                        check:(s)=>s.totalLaps>=20 },
   { id:'ddrills50', kid:'devin',   emoji:'🌟', name:'50 Drills',      how:'Complete 50 total drills this summer. You\'re putting in serious work — keep it up!',               check:(s)=>s.totalDrills>=50 },
@@ -970,15 +992,15 @@ const G_CHALLENGES = [
 ];
 const D_CHALLENGES = [
   { text:'Run laps 1 and 2 faster than last track day', xp:45 },
-  { text:'Do the Soccer Fun circuit twice today', xp:50 },
-  { text:'Score 8 out of 10 at Kick for Accuracy', xp:40 },
-  { text:'Cone Maze — zero knocked over', xp:35 },
   { text:'Beat your personal best lap time today', xp:60 },
   { text:'Run all 8 laps without stopping to walk', xp:55 },
-  { text:'Do 50 Toe Taps as fast as you can', xp:35 },
-  { text:'Score 5 Soccer Bowling strikes in a row', xp:45 },
-  { text:'Step-Over move — 10 times each side', xp:40 },
   { text:'Sprint the straight-aways on laps 7 and 8', xp:50 },
+  { text:'Do the full agility ladder with zero misses', xp:45 },
+  { text:'Do every cone drill faster than last time', xp:40 },
+  { text:'Finish laps 7–8 faster than laps 1–2', xp:55 },
+  { text:'Do 3 extra laps after the main workout', xp:50 },
+  { text:'Hold your sprinting form all the way through', xp:35 },
+  { text:'High knees every single lap for one full lap', xp:40 },
   { text:'Check off every drill with zero complaints 😄', xp:40 },
   { text:'Try Kick for Accuracy from extra far back', xp:35 },
 ];
@@ -1000,7 +1022,7 @@ function completeChallenge(kid) {
   if (!h[dateKey]) h[dateKey] = { checks:{}, shots:{}, fts:{}, laps:{} };
   h[dateKey]['challenge_'+kid] = true;
   h[dateKey]['challenge_'+kid+'_xp'] = c.xp;
-  try { localStorage.setItem('workout_v2', JSON.stringify(h)); } catch(e){}
+  try { localStorage.setItem('workout_v3', JSON.stringify(h)); } catch(e){}
   launchConfetti(2000);
   checkLevelUp();
   render();
@@ -1065,7 +1087,7 @@ function renderWeeklyRecap() {
     + '<div class="stat-cell"><div class="stat-cell-val">' + gFT + '</div><div class="stat-cell-lbl">🎯 FTs</div></div>'
     + '</div></div>'
     + '<div class="stat-card" style="border-top:4px solid var(--d)">'
-    + '<div class="stat-hdr"><div class="stat-av" style="background:var(--d-light)">⚽</div>'
+    + '<div class="stat-hdr"><div class="stat-av" style="background:var(--d-light)">🏃</div>'
     + '<div><div class="stat-name" style="color:var(--d)">Devin\'s Week</div></div>'
     + '<div class="stat-xp" style="margin-left:auto"><div class="stat-xp-num" style="color:var(--d)">+' + dXP + '</div><div class="stat-xp-lbl">XP</div></div></div>'
     + '<div class="stat-grid">'
@@ -1167,7 +1189,7 @@ function renderStats() {
   return `<div class="stats-wrap">
     <div class="stats-section-title">🏆 Summer Stats 2026</div>
     ${kidCard('grayson', allStats.grayson, '🏀', 'Grayson', 'var(--g)')}
-    ${kidCard('devin',   allStats.devin,   '⚽', 'Devin',   'var(--d)')}
+    ${kidCard('devin',   allStats.devin,   '🏃', 'Devin',   'var(--d)')}
   </div>`;
 }
 
@@ -1212,7 +1234,7 @@ function renderMain() {
   if (hdrSub) hdrSub.innerHTML = gOnly
     ? '🏀 <b style="color:#FFB347">Grayson\'s Drills</b>'
     : dOnly
-      ? '⚽ <b style="color:#4ADE80">Devin\'s Drills</b>'
+      ? '🏃 <b style="color:#4ADE80">Devin\'s Drills</b>'
       : '🏆 <b style="color:#F59E0B">Summer Stats</b>';
 
   // Stats view
@@ -1257,7 +1279,7 @@ function renderMain() {
     <div class="ds-stat"><div class="ds-val">${doneBlocks}/${totalBlocks}</div><div class="ds-lbl">Done</div></div>
     ${(totalShotGoal && !dOnly) ? `<div class="ds-stat"><div class="ds-val" style="color:#FFB347">${totalShots}</div><div class="ds-lbl">🏀 Shots</div></div>` : ''}
     ${(totalFTGoal && !dOnly) ? `<div class="ds-stat"><div class="ds-val" style="color:#FCD34D">${totalFTs}/${totalFTGoal}</div><div class="ds-lbl">🎯 FTs</div></div>` : ''}
-    ${(!gOnly && totalLapGoal) ? `<div class="ds-stat"><div class="ds-val" style="color:#6EE7B7">${totalLaps}/${totalLapGoal}</div><div class="ds-lbl">⚽ Laps</div></div>` : ''}
+    ${(!gOnly && totalLapGoal) ? `<div class="ds-stat"><div class="ds-val" style="color:#6EE7B7">${totalLaps}/${totalLapGoal}</div><div class="ds-lbl">🏃 Laps</div></div>` : ''}
   </div>`;
 
   // "Mark All Done" bar — past days only
@@ -1289,7 +1311,7 @@ function renderMain() {
       html += `<div class="track-label">📍 ${sess.location} &nbsp;·&nbsp; Bring: basketball · cones · agility ladder</div>`;
     }
     if (!dOnly) html += renderCard(day.key, sess, 'grayson', sess.grayson, 'g-card', '🏀', 'Grayson', '10 yrs · Basketball');
-    if (!gOnly && sess.devin) html += renderCard(day.key, sess, 'devin', sess.devin, 'd-card', '⚽', 'Devin', '6 yrs · Soccer');
+    if (!gOnly && sess.devin) html += renderCard(day.key, sess, 'devin', sess.devin, 'd-card', '🏃', 'Devin', '6 yrs · Track');
     html += `</div>`;
   }
 
@@ -1529,81 +1551,8 @@ function addFTs(k,n,goal)   { if(n===-999){state.fts[k]=0;}else{state.fts[k]=Mat
 function addLap(k,goal)     { state.laps[k]=Math.min((state.laps[k]||0)+1,goal); saveToday(); checkPersonalRecords(); checkLevelUp(); render(); }
 function resetLap(k)        { state.laps[k]=0; saveToday(); render(); }
 
-// ── CATCH-UP: auto-fill past weekdays with accurate history ──────────────
-// Runs every page load. Fills Tue (idx 1) through yesterday.
-//   Grayson: ALL sessions
-//   Devin:   ONLY track sessions (isTrack:true) — soccer not yet started
-// Monday is intentionally skipped — if they log it manually, that data persists.
-// Always overwrites so stale/partial data gets corrected on each deploy.
-function autoFillPastWeek() {
-  const history = getHistory();
-  const todayIdx = getTodayIdx();
-
-  // Helper to build date key for a given day index (local date — matches storage keys)
-  function dateForIdx(idx) {
-    const d = new Date();
-    d.setDate(d.getDate() + (idx - todayIdx));
-    return localDateStr(d);
-  }
-
-  // Fill Tuesday (idx 1) through yesterday
-  for (let dayIdx = 1; dayIdx < todayIdx; dayIdx++) {
-    const day = DAYS[dayIdx];
-    if (!day || day.rest) continue;
-    const dateKey = dateForIdx(dayIdx);
-    const existing = history[dateKey] || {};
-    const entry = { checks:{}, shots:{}, fts:{}, laps:{} };
-    // Preserve any already-earned challenge XP
-    if (existing['challenge_grayson'])    entry['challenge_grayson']    = existing['challenge_grayson'];
-    if (existing['challenge_grayson_xp']) entry['challenge_grayson_xp'] = existing['challenge_grayson_xp'];
-    if (existing['challenge_devin'])      entry['challenge_devin']      = existing['challenge_devin'];
-    if (existing['challenge_devin_xp'])   entry['challenge_devin_xp']   = existing['challenge_devin_xp'];
-
-    const sessions = schedule[day.key] || [];
-    for (const sess of sessions) {
-      // Grayson: fill every session
-      (function fillKid(kid, allowed) {
-        if (!allowed) return;
-        const data = sess[kid];
-        if (!data || !data.blocks) return;
-        data.blocks.forEach(function(b, i) {
-          entry.checks[ck(day.key, sess.id, kid, i)] = true;
-          const makesTag = b.tags && b.tags.find(function(t){ return /^\d+\s+makes/.test(t); });
-          const makes = makesTag ? parseInt(makesTag) : 0;
-          if (makes > 0) {
-            if (b.isFT) { const fk2 = ftk(day.key, sess.id, kid); entry.fts[fk2]  = (entry.fts[fk2]||0)  + makes; }
-            else        { const sk2 = sk(day.key,  sess.id, kid);  entry.shots[sk2] = (entry.shots[sk2]||0) + makes; }
-          }
-        });
-        if (kid === 'devin' && data.lapGoal) {
-          entry.laps[lk(day.key, sess.id, kid)] = data.lapGoal;
-        }
-      })('grayson', true);         // Grayson: all sessions
-      (function fillKid(kid, allowed) {
-        if (!allowed) return;
-        const data = sess[kid];
-        if (!data || !data.blocks) return;
-        data.blocks.forEach(function(b, i) {
-          entry.checks[ck(day.key, sess.id, kid, i)] = true;
-          const makesTag = b.tags && b.tags.find(function(t){ return /^\d+\s+makes/.test(t); });
-          const makes = makesTag ? parseInt(makesTag) : 0;
-          if (makes > 0) {
-            if (b.isFT) { const fk2 = ftk(day.key, sess.id, kid); entry.fts[fk2]  = (entry.fts[fk2]||0)  + makes; }
-            else        { const sk2 = sk(day.key,  sess.id, kid);  entry.shots[sk2] = (entry.shots[sk2]||0) + makes; }
-          }
-        });
-        if (kid === 'devin' && data.lapGoal) {
-          entry.laps[lk(day.key, sess.id, kid)] = data.lapGoal;
-        }
-      })('devin', !!sess.isTrack);  // Devin: track sessions only
-    }
-    history[dateKey] = entry;
-  }
-  try { localStorage.setItem('workout_v2', JSON.stringify(history)); } catch(e) {}
-}
-
 // ── INIT ─────────────────────────────────────
-autoFillPastWeek();         // pre-fill Mon–yesterday with "all done" if no data exists
+// No auto-fill — only manually logged data counts.
 state.day = getTodayIdx();
 loadSelectedDay(state.day); // load today's history into state
 initCompletedSessions();    // mark already-done sessions so no false-positive celebrations on load
