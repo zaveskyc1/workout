@@ -499,21 +499,25 @@ const dTrackSat = {
   ]
 };
 
-// Grayson skills day — one focused session (camp schedule, one workout/day)
-// Rotates focus Mon→Wed→Fri so each day feels fresh
+// Grayson skills day — 300-make shooting session + skill drills (camp schedule, one workout/day)
+// Rotating Mason Elite featured drill Mon→Wed→Fri
 function gSkillsDay(f) {
-  const focus = ['Foundation — perfect form on every rep', 'Speed — push the pace on every drill', 'Competition — beat Monday\'s and Wednesday\'s marks'][f];
+  const focus = ['Foundation — perfect form on every rep', 'Speed — push the pace on every drill', 'Competition — beat Monday\'s and Wednesday\'s makes'][f];
+  const featured = MASON_DRILLS[f % 3];
   return {
-    title: 'Skills Practice',
+    title: 'Skills & Shooting — 300 Makes',
     note: '⚡ ' + focus,
-    shotGoal: 100,
+    shotGoal: 250,
     blocks: [
-      { label:'Warmup — Layups & Catch & Shoot', detail:'Alternate sides under basket: layup each side × 10, then catch & shoot from 3 spots × 10 each. Stay loose and sharp.', tags:['30 makes','6 min'] },
+      { label:'Warmup Layups', detail:'Alternate sides under basket continuously — soft touch, both hands', tags:['20 makes','4 min'] },
+      { label: featured.label, detail: featured.detail, tags:['100 makes','18 min'], link:'https://www.facebook.com/share/r/1C673PnJvH/?mibextid=wwXIfr' },
+      { label:'Catch & Shoot Circuit', detail:'5 spots: L corner · L wing · Top of key · R wing · R corner — game-speed catches, land balanced every shot', tags:['75 makes','12 min'] },
+      { label:'Floaters', detail:'Drive from wing or elbow — soft floater finish in the paint, both sides', tags:['30 makes','8 min'] },
       shiftyDribble,
       ballProtection,
       passingDrills,
-      { label:'Pull-up Attack — Both Sides', detail:'1–2 hard dribbles from the top, pull up from elbow or mid-range. Attack left AND right equally — don\'t favor your strong hand.', tags:['30 makes','6 min'] },
-      { label:'🎯 Free Throws', detail:'Full routine every shot. Same arc, same release. Finish the session clean — imagine game on the line.', tags:['40 makes','7 min'], isFT: true },
+      { label:'Pull-up Attack — Both Elbows', detail:'1–2 hard dribbles from the top, pull up from elbow or mid-range. Attack both directions equally.', tags:['25 makes','5 min'] },
+      { label:'🎯 Free Throws — FINISH STRONG', detail:'Full routine every shot. Same arc, same release. No rushing — these count.', tags:['50 makes','8 min'], isFT: true },
     ]
   };
 }
@@ -1610,10 +1614,10 @@ function seedLegacyData() {
     const e = history[s.date] || { checks:{}, shots:{}, fts:{}, laps:{} };
     const hasG = Object.entries(e.checks||{}).some(([k,v]) => k.includes('-grayson-') && v);
     if (!hasG) {
-      // 6 blocks: warmup(shots), shifty, ballProtect, passing, pullup(shots), FT
-      for (let i = 0; i < 6; i++) e.checks[s.dayKey+'-skills-grayson-'+i] = true;
-      e.shots = e.shots||{}; e.shots[s.dayKey+'-skills-grayson'] = 60; // 30 warmup + 30 pull-up
-      e.fts   = e.fts  ||{}; e.fts  [s.dayKey+'-skills-grayson'] = 40; // FT block
+      // 9 blocks: warmup, mason, catch&shoot, floaters, shifty, ballProtect, passing, pullup, FT
+      for (let i = 0; i < 9; i++) e.checks[s.dayKey+'-skills-grayson-'+i] = true;
+      e.shots = e.shots||{}; e.shots[s.dayKey+'-skills-grayson'] = 250; // 300-make session
+      e.fts   = e.fts  ||{}; e.fts  [s.dayKey+'-skills-grayson'] = 50;
       history[s.date] = e;
       changed = true;
     }
