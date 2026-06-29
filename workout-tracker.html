@@ -979,21 +979,22 @@ function renderLapTimeSection() {
 }
 
 // ── DAILY CHALLENGE ───────────────────────────
+// Mon–Fri: fixed day-of-week challenges — 50 push-ups every day, paired exercise varies
+const G_WEEKDAY_CHALLENGES = {
+  1: { text:'50 push-ups + 50 sit-ups', xp:55 },                       // Monday
+  2: { text:'50 push-ups + 75 calf raises', xp:55 },                    // Tuesday
+  3: { text:'50 push-ups + 75 sit-ups', xp:55 },                        // Wednesday
+  4: { text:'50 push-ups + 100 calf raises', xp:60 },                   // Thursday
+  5: { text:'50 push-ups + 50 sit-ups + 50 calf raises', xp:65 },       // Friday — all 3!
+};
+// Saturday: bonus basketball/conditioning challenge (seed-based variety)
 const G_CHALLENGES = [
+  { text:'50 push-ups + 50 sit-ups after the track session', xp:60 },
+  { text:'Hold a plank for 2 full minutes', xp:50 },
+  { text:'50 push-ups + 75 calf raises after track', xp:60 },
   { text:'Make 10 FTs in a row without missing', xp:50 },
-  { text:'Hit 30 bonus shots from the corners only', xp:40 },
-  { text:'Complete every drill with zero breaks today', xp:45 },
-  { text:'Make 15 mid-range pull-ups in a row', xp:50 },
-  { text:'Check off every single drill in today\'s session', xp:60 },
-  { text:'Make 20 extra free throws at end of session', xp:45 },
-  { text:'Perfect arc on every single FT today', xp:40 },
-  { text:'Hit 5 shots from every spot on the court', xp:50 },
-  { text:'Zero misses in your warmup layup set', xp:35 },
-  { text:'Make 10 floaters in a row', xp:45 },
-  { text:'Beat yesterday\'s total shot count', xp:55 },
-  { text:'Nail every shifty dribble move clean — no bobbles', xp:55 },
-  { text:'Same arc, same release — every FT today', xp:35 },
-  { text:'Make 10 straight from the top of the key', xp:45 },
+  { text:'50 push-ups + 50 sit-ups + 50 calf raises', xp:65 },
+  { text:'Zero misses on your warmup layup set', xp:35 },
 ];
 const D_CHALLENGES = [
   { text:'Run laps 1 and 2 faster than last track day', xp:45 },
@@ -1010,9 +1011,15 @@ const D_CHALLENGES = [
   { text:'Run every lap faster than your average pace', xp:45 },
 ];
 function getTodayChallenge(kid) {
+  if (kid === 'grayson') {
+    const dow = new Date().getDay(); // 1=Mon … 5=Fri
+    if (G_WEEKDAY_CHALLENGES[dow]) return G_WEEKDAY_CHALLENGES[dow];
+    // Saturday: seed-based from bonus pool
+    const seed = parseInt(getDateKey().replace(/-/g,''));
+    return G_CHALLENGES[seed % G_CHALLENGES.length];
+  }
   const seed = parseInt(getDateKey().replace(/-/g,''));
-  const pool = kid === 'grayson' ? G_CHALLENGES : D_CHALLENGES;
-  return pool[seed % pool.length];
+  return D_CHALLENGES[seed % D_CHALLENGES.length];
 }
 function isChallengeComplete(kid) {
   // Use the same date key as the rest of the day's data (avoids UTC mismatch)
