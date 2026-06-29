@@ -1011,14 +1011,16 @@ const D_CHALLENGES = [
   { text:'Run every lap faster than your average pace', xp:45 },
 ];
 function getTodayChallenge(kid) {
+  // Use the SELECTED day's day-of-week, not necessarily today's
+  // state.day: 0=Mon(1) 1=Tue(2) 2=Wed(3) 3=Thu(4) 4=Fri(5) 5=Sat(6) 6=Sun(0)
+  const dow = (state.day + 1) % 7;
   if (kid === 'grayson') {
-    const dow = new Date().getDay(); // 1=Mon … 5=Fri
     if (G_WEEKDAY_CHALLENGES[dow]) return G_WEEKDAY_CHALLENGES[dow];
-    // Saturday: seed-based from bonus pool
-    const seed = parseInt(getDateKey().replace(/-/g,''));
+    // Saturday: seed-based from bonus pool using that day's date key
+    const seed = parseInt(getDateKeyForDayIdx(state.day).replace(/-/g,''));
     return G_CHALLENGES[seed % G_CHALLENGES.length];
   }
-  const seed = parseInt(getDateKey().replace(/-/g,''));
+  const seed = parseInt(getDateKeyForDayIdx(state.day).replace(/-/g,''));
   return D_CHALLENGES[seed % D_CHALLENGES.length];
 }
 function isChallengeComplete(kid) {
@@ -1042,16 +1044,18 @@ function completeChallenge(kid) {
 function renderChallengeCard(kid) {
   const day = DAYS[state.day];
   if (day.rest) return '';
-  if (state.day !== getTodayIdx()) return '';
   const c = getTodayChallenge(kid);
   const done = isChallengeComplete(kid);
+  const isToday = state.day === getTodayIdx();
   return '<div class="challenge-card">'
     + '<div class="chal-hdr">⚡ DAILY BONUS CHALLENGE</div>'
     + '<div class="chal-txt">' + c.text + '</div>'
     + '<div class="chal-xp">+' + c.xp + ' bonus XP if you complete it</div>'
     + (done
         ? '<div class="chal-done-badge">✅ Challenge Complete! +' + c.xp + ' XP earned!</div>'
-        : '<button class="chal-btn" onclick="completeChallenge(\'' + kid + '\')">✅ I Did It!</button>')
+        : isToday
+          ? '<button class="chal-btn" onclick="completeChallenge(\'' + kid + '\')">✅ I Did It!</button>'
+          : '')
     + '</div>';
 }
 
@@ -1294,9 +1298,9 @@ function renderMain() {
     ${(!gOnly && totalLapGoal) ? `<div class="ds-stat"><div class="ds-val" style="color:#6EE7B7">${totalLaps}/${totalLapGoal}</div><div class="ds-lbl">🏃 Laps</div></div>` : ''}
   </div>`;
 
-  // "Mark All Done" bar — past days only
+  // "Mark All Done" bar — past days only (not future tabs)
   const todayIdx = getTodayIdx();
-  if (state.day !== todayIdx) {
+  if (state.day < todayIdx) {
     const kid = dOnly ? 'devin' : 'grayson';
     const kidLabel = dOnly ? 'Devin' : 'Grayson';
     html += `<div class="mark-done-bar">
@@ -1305,11 +1309,9 @@ function renderMain() {
     </div>`;
   }
 
-  // Daily challenge cards (today only)
-  if (state.day === todayIdx) {
-    if (gOnly)  html += renderChallengeCard('grayson');
-    if (dOnly)  html += renderChallengeCard('devin');
-  }
+  // Daily challenge cards — show on all non-rest days
+  if (gOnly) html += renderChallengeCard('grayson');
+  if (dOnly) html += renderChallengeCard('devin');
 
   for (const sess of sessions) {
     html += `<div class="session">`;
