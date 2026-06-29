@@ -252,6 +252,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .recap-rest-msg{text-align:center;padding:14px 0 4px;font-size:13px;color:var(--muted);}
 
 /* ── LAP TIME LOGGER ──────────────────────────────────── */
+.clink{display:inline-block;margin:5px 0 2px;padding:4px 10px;background:rgba(59,130,246,.15);color:#60A5FA;border:1px solid rgba(59,130,246,.3);border-radius:7px;font-size:11px;font-weight:700;text-decoration:none;cursor:pointer;}
+.clink:hover{background:rgba(59,130,246,.25);}
 .lap-time-section{padding:10px 14px;border-top:1px solid var(--border);}
 .lap-time-hdr{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:7px;}
 .lap-time-row{display:flex;gap:8px;align-items:center;}
@@ -406,6 +408,7 @@ const shiftyDribble = {
   label: 'Shifty Dribble Series',
   detail: 'Stay low, weight on toes the whole time. 4 rounds × 30 sec on / 15 sec rest:\n① In-&-Out — push out with fingertips, snap back, 10 each hand\n② Crossover + retreat dribble — attack hard, retreat fast, stay low\n③ Hesitation "hesi" — sell the drive with your eyes, freeze defender, explode × 10 each direction\n④ Behind-the-back change of direction × 10\nFocus: snap every dribble, explode out of every change.',
   tags: ['4 rounds', '10 min'],
+  link: 'https://www.facebook.com/share/r/18aghRit6G/?mibextid=wwXIfr',
 };
 
 // Ball Protection — shielding under defensive pressure
@@ -413,6 +416,7 @@ const ballProtection = {
   label: 'Ball Protection Circuit',
   detail: 'Dad applies active hand pressure the entire time. 3 rounds:\n① Low pound dribble × 20 — use your body to shield, don\'t reach away from pressure\n② Speed dribble down lane, dad bumps from the side — absorb contact, keep the ball\n③ Post-up catch: receive pass near baseline, pivot away from pressure, create your shot\nFocus: body between defender and ball at all times.',
   tags: ['3 rounds', '10 min'],
+  link: 'https://www.facebook.com/share/r/1BFwThfQDS/?mibextid=wwXIfr',
 };
 
 // Passing — chest, bounce, overhead, one-hand push
@@ -420,6 +424,7 @@ const passingDrills = {
   label: '🎯 Passing & Receiving',
   detail: 'With dad 12–15 feet apart. 15 reps × 4 types:\n① Chest pass — step in, thumbs point down on release, snap the wrists\n② Bounce pass — aim 2/3 of the way, low and hard\n③ Overhead skip pass — fake one direction, throw the other\n④ One-hand push pass — right then left, game-speed release at chest height\nFocus: always step toward your target, call "ball!" when you\'re ready to receive.',
   tags: ['60 total reps', '10 min'],
+  link: 'https://www.facebook.com/share/r/1CRzcvRKdG/?mibextid=wwXIfr',
 };
 
 // Grayson track (75-min, Tue/Thu) — morning already did shooting so NO FT here
@@ -1410,6 +1415,7 @@ function renderCard(dayKey, sess, kidKey, data, cls, emoji, name, sub) {
       <div class="ctxt">
         <div class="clabel">${b.label}</div>
         ${b.detail ? `<div class="cdetail">${b.detail.replace(/\n/g,'<br>')}</div>` : ''}
+        ${b.link ? `<a class="clink" href="${b.link}" target="_blank" onclick="event.stopPropagation()">📺 Watch video</a>` : ''}
         ${tagHtml}
       </div>
     </div>`;
