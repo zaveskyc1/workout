@@ -344,9 +344,9 @@ const MASON_DRILLS = [
     tags:['50 makes','~10 min'],
   },
   {
-    label:'2 Dribble Escape — 50 Makes',
-    detail:'Catch the ball in a live-ball stance. 2 hard dribbles to create separation from the imaginary tight defender, then rise up for the pull-up. Attack both directions equally.',
-    tags:['50 makes','~10 min'],
+    label:'Dribble Escape Pull-Up — 50 Makes',
+    detail:'Catch the ball in a live-ball stance. Explode with 2 hard dribbles to create separation from the imaginary tight defender, then rise up for the pull-up. 2 reps of this drill — 50 makes each rep. Attack both directions equally.',
+    tags:['50 makes'],
   },
   {
     label:'Flip Out 1–2 Square Up — 50 Makes',
@@ -406,16 +406,16 @@ function gEvening(f) {
 // Shifty Dribbling — low-stance change-of-direction speed work
 const shiftyDribble = {
   label: 'Shifty Dribble Series',
-  detail: 'Stay low, weight on toes the whole time. 4 rounds × 30 sec on / 15 sec rest:\n① In-&-Out — push out with fingertips, snap back, 10 each hand\n② Crossover + retreat dribble — attack hard, retreat fast, stay low\n③ Hesitation "hesi" — sell the drive with your eyes, freeze defender, explode × 10 each direction\n④ Behind-the-back change of direction × 10\nFocus: snap every dribble, explode out of every change.',
-  tags: ['4 rounds', '10 min'],
+  detail: 'Stay low, weight on toes the whole time. 2 rounds × 30 sec on / 15 sec rest:\n① In-&-Out — push out with fingertips, snap back, 10 each hand\n② Crossover + retreat dribble — attack hard, retreat fast, stay low\n③ Hesitation "hesi" — sell the drive with your eyes, freeze defender, explode × 10 each direction\n④ Behind-the-back change of direction × 10\nFocus: snap every dribble, explode out of every change.',
+  tags: ['2 rounds'],
   link: 'https://www.facebook.com/share/r/18aghRit6G/?mibextid=wwXIfr',
 };
 
 // Ball Protection — shielding under defensive pressure
 const ballProtection = {
   label: 'Ball Protection Circuit',
-  detail: 'Dad applies active hand pressure the entire time. 3 rounds:\n① Low pound dribble × 20 — use your body to shield, don\'t reach away from pressure\n② Speed dribble down lane, dad bumps from the side — absorb contact, keep the ball\n③ Post-up catch: receive pass near baseline, pivot away from pressure, create your shot\nFocus: body between defender and ball at all times.',
-  tags: ['3 rounds', '10 min'],
+  detail: 'Dad applies active hand pressure the entire time. 1 round:\n① Low pound dribble × 20 — use your body to shield, don\'t reach away from pressure\n② Speed dribble down lane, dad bumps from the side — absorb contact, keep the ball\n③ Post-up catch: receive pass near baseline, pivot away from pressure, create your shot\nFocus: body between defender and ball at all times.',
+  tags: ['1 round'],
   link: 'https://www.facebook.com/share/r/1BFwThfQDS/?mibextid=wwXIfr',
 };
 
@@ -435,7 +435,7 @@ const gTrack75 = {
     { label:'Lap Circuit — Set 1', detail:'2 laps: Dribble THROUGH LEGS on every TURN · Sprint straight-aways with ball in hand', tags:['2 laps','12 min'] },
     { label:'Ladder Drills — Round 1', detail:'5 reps each:\n① Crossover\n② Through the legs, behind the back\n③ Double through legs\n④ Double behind the back\n⑤ Crossover, through legs & behind back combo', tags:['5 reps each','10 min'] },
     shiftyDribble,
-    { label:'Lap Circuit — Set 2', detail:'2 laps — push harder than Set 1, keep the ball tight', tags:['2 laps','12 min'] },
+    { label:'Lap Circuit — Set 2', detail:'2 laps left hand dribbling only. He gets a water break after each lap.', tags:['2 laps'] },
     ballProtection,
     { label:'Cool Down Stretch', detail:'Quad · Hamstring · Hip flexor · Calf — hold 30 sec each side', tags:['5 min'] },
   ]
@@ -449,7 +449,7 @@ const gTrackSat = {
     { label:'Lap Circuit — Set 1', detail:'2 laps: Dribble through legs on turns · Sprint straight-aways with ball in hand', tags:['2 laps','12 min'] },
     { label:'Ladder Drills — Round 1', detail:'5 reps each:\n① Crossover\n② Through the legs, behind the back\n③ Double through legs\n④ Double behind the back\n⑤ Crossover, through legs & behind back combo', tags:['5 reps each','12 min'] },
     shiftyDribble,
-    { label:'Lap Circuit — Set 2', detail:'2 laps — push harder, keep ball moving', tags:['2 laps','12 min'] },
+    { label:'Lap Circuit — Set 2', detail:'2 laps left hand dribbling only. He gets a water break after each lap.', tags:['2 laps'] },
     ballProtection,
     { label:'Two-Ball Dribbling Circuit', detail:'Dribble TWO balls at once — 3 reps: straight jog down the straight, alternating (one high/one low), simultaneous crossovers. Builds both hands independently.', tags:['10 min'] },
     { label:'Weak-Hand Lap Challenge', detail:'One full lap around the track — non-dominant hand ONLY. No switching allowed. Builds your off hand for real game situations.', tags:['1 lap','7 min'] },
@@ -1057,9 +1057,7 @@ function renderChallengeCard(kid) {
     + '<div class="chal-xp">+' + c.xp + ' bonus XP if you complete it</div>'
     + (done
         ? '<div class="chal-done-badge">✅ Challenge Complete! +' + c.xp + ' XP earned!</div>'
-        : isToday
-          ? '<button class="chal-btn" onclick="completeChallenge(\'' + kid + '\')">✅ I Did It!</button>'
-          : '')
+        : '<button class="chal-btn" onclick="completeChallenge(\'' + kid + '\')">✅ I Did It!</button>')
     + '</div>';
 }
 
@@ -1418,7 +1416,7 @@ function renderCard(dayKey, sess, kidKey, data, cls, emoji, name, sub) {
     const isFT = !!b.isFT;
     const rowCls = `ci${isDone?' done':''}${isFT?' ft-row':''}`;
     const tagHtml = b.tags?.length
-      ? `<div class="cmeta">${b.tags.map(t=>`<span class="ctag${isFT?' ft-tag':''}">${t}</span>`).join('')}</div>`
+      ? `<div class="cmeta">${b.tags.filter(t=>/min/.test(t)?false:true).map(t=>`<span class="ctag${isFT?' ft-tag':''}">${t}</span>`).join('')}</div>`
       : '';
     const makesTag = b.tags?.find(t => /^\d+\s+makes/.test(t));
     const autoMakes = makesTag ? parseInt(makesTag) : 0;
