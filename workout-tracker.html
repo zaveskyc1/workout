@@ -430,6 +430,7 @@ const passingDrills = {
 // Grayson track (75-min, Tue/Thu) — morning already did shooting so NO FT here
 const gTrack75 = {
   title: 'Ball Handling & Agility',
+  lapGoal: 8,
   blocks: [
     { label:'Dynamic Warmup', detail:'High knees · Butt kicks · Leg swings front & side · Arm circles · Ankle hops', tags:['5 min'] },
     { label:'Lap Circuit — Set 1', detail:'2 laps: Dribble THROUGH LEGS on every TURN · Sprint straight-aways with ball in hand', tags:['2 laps','12 min'] },
@@ -444,6 +445,7 @@ const gTrack75 = {
 // Grayson SATURDAY track (2 hrs) — full extended session
 const gTrackSat = {
   title: 'Ball Handling & Agility — Extended',
+  lapGoal: 8,
   blocks: [
     { label:'Dynamic Warmup', detail:'High knees · Butt kicks · Leg swings · Arm circles · Ankle hops', tags:['5 min'] },
     { label:'Lap Circuit — Set 1', detail:'2 laps: Dribble through legs on turns · Sprint straight-aways with ball in hand', tags:['2 laps','12 min'] },
@@ -672,7 +674,7 @@ function computeStreak(kid, history) {
 function computeAllStats() {
   const history = getHistory();
   const weekStart = getWeekStart();
-  const g = { pts:0, totalDrills:0, weekDrills:0, totalShots:0, weekShots:0, totalFTs:0, weekFTs:0, daysWorked:0, weekDays:0, streak:0, trackDays:0 };
+  const g = { pts:0, totalDrills:0, weekDrills:0, totalShots:0, weekShots:0, totalFTs:0, weekFTs:0, totalLaps:0, weekLaps:0, daysWorked:0, weekDays:0, streak:0, trackDays:0 };
   const dv = { pts:0, totalDrills:0, weekDrills:0, totalLaps:0, weekLaps:0, maxLaps:0, daysWorked:0, weekDays:0, streak:0, trackDays:0 };
   const sortedDates = Object.keys(history).sort().reverse();
 
@@ -683,12 +685,13 @@ function computeAllStats() {
     const dDrills = Object.entries(dd.checks||{}).filter(([k,v])=>k.includes('-devin-')&&v).length;
     const gShots  = Object.entries(dd.shots||{}).filter(([k])=>k.includes('grayson')).reduce((a,[,v])=>a+v,0);
     const gFTs    = Object.entries(dd.fts||{}).filter(([k])=>k.includes('grayson')).reduce((a,[,v])=>a+v,0);
+    const gLaps   = Object.entries(dd.laps||{}).filter(([k])=>k.includes('grayson')).reduce((a,[,v])=>a+v,0);
     const dLaps   = Object.entries(dd.laps||{}).filter(([k])=>k.includes('devin')).reduce((a,[,v])=>a+v,0);
     // Grayson
-    g.totalDrills+=gDrills; g.totalShots+=gShots; g.totalFTs+=gFTs;
+    g.totalDrills+=gDrills; g.totalShots+=gShots; g.totalFTs+=gFTs; g.totalLaps+=gLaps;
     g.pts+=gDrills*10 + (dd['challenge_grayson_xp']||0);
     if(gDrills>0){g.daysWorked++;if(isTrk)g.trackDays++;}
-    if(isWk){g.weekDrills+=gDrills;g.weekShots+=gShots;g.weekFTs+=gFTs;if(gDrills>0)g.weekDays++;}
+    if(isWk){g.weekDrills+=gDrills;g.weekShots+=gShots;g.weekFTs+=gFTs;g.weekLaps+=gLaps;if(gDrills>0)g.weekDays++;}
     // Devin
     dv.totalDrills+=dDrills; dv.totalLaps+=dLaps;
     dv.pts+=dDrills*10 + dLaps*5 + (dd['challenge_devin_xp']||0); // 5 XP per lap
@@ -1178,14 +1181,15 @@ function renderStats() {
         <div class="stat-cell"><div class="stat-cell-val">${stats.streak}🔥</div><div class="stat-cell-lbl">Streak</div></div>
         ${kid==='grayson'
           ? `<div class="stat-cell"><div class="stat-cell-val">${stats.totalShots}</div><div class="stat-cell-lbl">🏀 Shots</div></div>
-             <div class="stat-cell"><div class="stat-cell-val">${stats.totalFTs}</div><div class="stat-cell-lbl">🎯 FTs</div></div>`
+             <div class="stat-cell"><div class="stat-cell-val">${stats.totalFTs}</div><div class="stat-cell-lbl">🎯 FTs</div></div>
+             <div class="stat-cell"><div class="stat-cell-val">${stats.totalLaps}</div><div class="stat-cell-lbl">🏃 Laps</div></div>`
           : `<div class="stat-cell"><div class="stat-cell-val">${stats.totalDrills}</div><div class="stat-cell-lbl">✅ Drills</div></div>
              <div class="stat-cell"><div class="stat-cell-val">${stats.totalLaps}</div><div class="stat-cell-lbl">🏃 Laps</div></div>`}
       </div>
       <div class="stat-week">
         <div class="stat-week-lbl">This Week</div>
         <div class="stat-week-val">${kid==='grayson'
-          ? `${stats.weekDrills} drills · ${stats.weekShots} shots · ${stats.weekFTs} FTs`
+          ? `${stats.weekDrills} drills · ${stats.weekShots} shots · ${stats.weekFTs} FTs · ${stats.weekLaps} laps`
           : `${stats.weekDrills} drills · ${stats.weekLaps} laps`}</div>
       </div>
       ${earned.length ? `<div class="badge-wrap">
@@ -1394,7 +1398,7 @@ function renderCard(dayKey, sess, kidKey, data, cls, emoji, name, sub) {
   }
 
   // Lap counter
-  if (kidKey === 'devin' && data?.lapGoal) {
+  if (data?.lapGoal) {
     const key = lk(dayKey, sess.id, kidKey);
     const count = state.laps[key] || 0;
     const met = count >= data.lapGoal;
@@ -1596,7 +1600,7 @@ function seedLegacyData() {
   const history = getHistory();
   let changed = false;
 
-  // Grayson — 8 skills-day sessions (June 1 = Monday, 4 weeks before today June 29)
+  // Grayson — confirmed skills-day sessions. shots/fts optional overrides (defaults: 250/50).
   const G_PAST = [
     { date:'2026-06-01', dayKey:'monday'    },
     { date:'2026-06-03', dayKey:'wednesday' },
@@ -1606,6 +1610,8 @@ function seedLegacyData() {
     { date:'2026-06-12', dayKey:'friday'    },
     { date:'2026-06-15', dayKey:'monday'    },
     { date:'2026-06-17', dayKey:'wednesday' },
+    { date:'2026-06-26', dayKey:'friday'    },
+    { date:'2026-06-29', dayKey:'monday',   fts:100 }, // normal 50 + extra 50 FTs
   ];
   for (const s of G_PAST) {
     const e = history[s.date] || { checks:{}, shots:{}, fts:{}, laps:{} };
@@ -1613,8 +1619,8 @@ function seedLegacyData() {
     if (!hasG) {
       // 9 blocks: warmup, mason, catch&shoot, floaters, shifty, ballProtect, passing, pullup, FT
       for (let i = 0; i < 9; i++) e.checks[s.dayKey+'-skills-grayson-'+i] = true;
-      e.shots = e.shots||{}; e.shots[s.dayKey+'-skills-grayson'] = 250; // 300-make session
-      e.fts   = e.fts  ||{}; e.fts  [s.dayKey+'-skills-grayson'] = 50;
+      e.shots = e.shots||{}; e.shots[s.dayKey+'-skills-grayson'] = s.shots || 250;
+      e.fts   = e.fts  ||{}; e.fts  [s.dayKey+'-skills-grayson'] = s.fts   || 50;
       history[s.date] = e;
       changed = true;
     }
@@ -1634,7 +1640,7 @@ function seedLegacyData() {
     const hasG = Object.entries(e.checks||{}).some(([k,v]) => k.includes('-grayson-') && v);
     if (!hasG) {
       for (let i = 0; i < s.nBlocks; i++) e.checks[s.dayKey+'-'+s.sessId+'-grayson-'+i] = true;
-      // No shots/FTs on track days — all drills
+      e.laps = e.laps||{}; e.laps[s.dayKey+'-'+s.sessId+'-grayson'] = 8;
       history[s.date] = e;
       changed = true;
     }
