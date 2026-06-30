@@ -406,6 +406,7 @@ function gEvening(f) {
 // Shifty Dribbling — low-stance change-of-direction speed work
 const shiftyDribble = {
   label: 'Shifty Dribble Series',
+  isSkill: true,
   detail: 'Stay low, weight on toes the whole time. 2 rounds × 30 sec on / 15 sec rest:\n① In-&-Out — push out with fingertips, snap back, 10 each hand\n② Crossover + retreat dribble — attack hard, retreat fast, stay low\n③ Hesitation "hesi" — sell the drive with your eyes, freeze defender, explode × 10 each direction\n④ Behind-the-back change of direction × 10\nFocus: snap every dribble, explode out of every change.',
   tags: ['2 rounds'],
   link: 'https://www.facebook.com/share/r/18aghRit6G/?mibextid=wwXIfr',
@@ -414,6 +415,7 @@ const shiftyDribble = {
 // Ball Protection — shielding under defensive pressure
 const ballProtection = {
   label: 'Ball Protection Circuit',
+  isSkill: true,
   detail: 'Dad applies active hand pressure the entire time. 1 round:\n① Low pound dribble × 20 — use your body to shield, don\'t reach away from pressure\n② Speed dribble down lane, dad bumps from the side — absorb contact, keep the ball\n③ Post-up catch: receive pass near baseline, pivot away from pressure, create your shot\nFocus: body between defender and ball at all times.',
   tags: ['1 round'],
   link: 'https://www.facebook.com/share/r/1BFwThfQDS/?mibextid=wwXIfr',
@@ -674,7 +676,7 @@ function computeStreak(kid, history) {
 function computeAllStats() {
   const history = getHistory();
   const weekStart = getWeekStart();
-  const g = { pts:0, totalDrills:0, weekDrills:0, totalShots:0, weekShots:0, totalFTs:0, weekFTs:0, totalLaps:0, weekLaps:0, daysWorked:0, weekDays:0, streak:0, trackDays:0 };
+  const g = { pts:0, totalDrills:0, weekDrills:0, totalShots:0, weekShots:0, totalFTs:0, weekFTs:0, totalLaps:0, weekLaps:0, totalSkillReps:0, weekSkillReps:0, daysWorked:0, weekDays:0, streak:0, trackDays:0 };
   const dv = { pts:0, totalDrills:0, weekDrills:0, totalLaps:0, weekLaps:0, maxLaps:0, daysWorked:0, weekDays:0, streak:0, trackDays:0 };
   const sortedDates = Object.keys(history).sort().reverse();
 
@@ -687,11 +689,18 @@ function computeAllStats() {
     const gFTs    = Object.entries(dd.fts||{}).filter(([k])=>k.includes('grayson')).reduce((a,[,v])=>a+v,0);
     const gLaps   = Object.entries(dd.laps||{}).filter(([k])=>k.includes('grayson')).reduce((a,[,v])=>a+v,0);
     const dLaps   = Object.entries(dd.laps||{}).filter(([k])=>k.includes('devin')).reduce((a,[,v])=>a+v,0);
+    // Grayson skill reps — count checked blocks flagged isSkill
+    const _dayKeys = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+    const _dk = _dayKeys[new Date(date+'T12:00:00').getDay()];
+    let skillReps = 0;
+    for (const sess of (schedule[_dk]||[])) {
+      (sess.grayson?.blocks||[]).forEach(function(b,i){ if(b.isSkill && dd.checks[ck(_dk,sess.id,'grayson',i)]) skillReps++; });
+    }
     // Grayson
-    g.totalDrills+=gDrills; g.totalShots+=gShots; g.totalFTs+=gFTs; g.totalLaps+=gLaps;
+    g.totalDrills+=gDrills; g.totalShots+=gShots; g.totalFTs+=gFTs; g.totalLaps+=gLaps; g.totalSkillReps+=skillReps;
     g.pts+=gDrills*10 + (dd['challenge_grayson_xp']||0);
     if(gDrills>0){g.daysWorked++;if(isTrk)g.trackDays++;}
-    if(isWk){g.weekDrills+=gDrills;g.weekShots+=gShots;g.weekFTs+=gFTs;g.weekLaps+=gLaps;if(gDrills>0)g.weekDays++;}
+    if(isWk){g.weekDrills+=gDrills;g.weekShots+=gShots;g.weekFTs+=gFTs;g.weekLaps+=gLaps;g.weekSkillReps+=skillReps;if(gDrills>0)g.weekDays++;}
     // Devin
     dv.totalDrills+=dDrills; dv.totalLaps+=dLaps;
     dv.pts+=dDrills*10 + dLaps*5 + (dd['challenge_devin_xp']||0); // 5 XP per lap
@@ -738,6 +747,11 @@ const ALL_BADGES = [
   { id:'dtrack5',   kid:'devin',   emoji:'🏃', name:'Track Regular',  how:'Come to 5 track sessions. Runners are made by showing up again and again!',                          check:(s)=>s.trackDays>=5 },
   { id:'dlaps50',   kid:'devin',   emoji:'🔥', name:'Lap Legend',     how:'Run 50 total laps across all your track days. That\'s a LOT of running — elite endurance!',         check:(s)=>s.totalLaps>=50 },
   { id:'ddrills100',kid:'devin',   emoji:'👑', name:'100 Drills',     how:'Complete 100 drills total this summer. If you hit this one, you\'re an absolute legend!',            check:(s)=>s.totalDrills>=100 },
+  // Grayson handles badges
+  { id:'skill10',  kid:'grayson', emoji:'🤲', name:'Handles Apprentice', how:'Complete the Shifty Dribble or Ball Protection drill 10 times total. The grind starts here!',         check:(s)=>s.totalSkillReps>=10 },
+  { id:'skill25',  kid:'grayson', emoji:'🔥', name:'Ball Handler',        how:'Complete 25 total handles reps. You\'re building the kind of handles that defenders hate!',         check:(s)=>s.totalSkillReps>=25 },
+  { id:'skill50',  kid:'grayson', emoji:'⚡', name:'Shifty',              how:'50 handles reps! Low stance, quick hands — you\'re starting to look like a real point guard.',     check:(s)=>s.totalSkillReps>=50 },
+  { id:'skill100', kid:'grayson', emoji:'👑', name:'Handles Elite',       how:'100 handles reps! Elite-level dedication. Most players skip this work — you didn\'t.',            check:(s)=>s.totalSkillReps>=100 },
   // Track-week streaks for Devin (replaces daily streak — his schedule is Tue/Thu/Sat)
   { id:'dtrack2wk', kid:'devin',   emoji:'🔥', name:'Double Down',    how:'Complete 2 or more track sessions in a single week — Tuesday, Thursday, and/or Saturday all count!',   check:(s)=>s.weekDays>=2 },
   { id:'dtrack3wk', kid:'devin',   emoji:'💥', name:'Full Track Week', how:'Hit all 3 track sessions in one week — Tuesday, Thursday, AND Saturday. That\'s a full training week!', check:(s)=>s.weekDays>=3 },
@@ -1137,6 +1151,10 @@ const BADGE_PROGRESS = {
   'gtrack1':    function(s){ return s.trackDays+'/1 track days'; },
   'gtrack5':    function(s){ return s.trackDays+'/5 track days'; },
   'gtrack10':   function(s){ return s.trackDays+'/10 track days'; },
+  'skill10':    function(s){ return s.totalSkillReps+'/10 handles reps'; },
+  'skill25':    function(s){ return s.totalSkillReps+'/25 handles reps'; },
+  'skill50':    function(s){ return s.totalSkillReps+'/50 handles reps'; },
+  'skill100':   function(s){ return s.totalSkillReps+'/100 handles reps'; },
   'dsoccer1':   function(s){ return s.daysWorked+'/1 sessions'; },
   'ddrills10':  function(s){ return s.totalDrills+'/10 drills'; },
   'dtrack1':    function(s){ return s.trackDays+'/1 track days'; },
@@ -1182,14 +1200,15 @@ function renderStats() {
         ${kid==='grayson'
           ? `<div class="stat-cell"><div class="stat-cell-val">${stats.totalShots}</div><div class="stat-cell-lbl">🏀 Shots</div></div>
              <div class="stat-cell"><div class="stat-cell-val">${stats.totalFTs}</div><div class="stat-cell-lbl">🎯 FTs</div></div>
-             <div class="stat-cell"><div class="stat-cell-val">${stats.totalLaps}</div><div class="stat-cell-lbl">🏃 Laps</div></div>`
+             <div class="stat-cell"><div class="stat-cell-val">${stats.totalLaps}</div><div class="stat-cell-lbl">🏃 Laps</div></div>
+             <div class="stat-cell"><div class="stat-cell-val">${stats.totalSkillReps}</div><div class="stat-cell-lbl">🤲 Handles</div></div>`
           : `<div class="stat-cell"><div class="stat-cell-val">${stats.totalDrills}</div><div class="stat-cell-lbl">✅ Drills</div></div>
              <div class="stat-cell"><div class="stat-cell-val">${stats.totalLaps}</div><div class="stat-cell-lbl">🏃 Laps</div></div>`}
       </div>
       <div class="stat-week">
         <div class="stat-week-lbl">This Week</div>
         <div class="stat-week-val">${kid==='grayson'
-          ? `${stats.weekDrills} drills · ${stats.weekShots} shots · ${stats.weekFTs} FTs · ${stats.weekLaps} laps`
+          ? `${stats.weekDrills} drills · ${stats.weekShots} shots · ${stats.weekFTs} FTs · ${stats.weekLaps} laps · ${stats.weekSkillReps} handles`
           : `${stats.weekDrills} drills · ${stats.weekLaps} laps`}</div>
       </div>
       ${earned.length ? `<div class="badge-wrap">
@@ -1638,12 +1657,18 @@ function seedLegacyData() {
   for (const s of G_TRACK) {
     const e = history[s.date] || { checks:{}, shots:{}, fts:{}, laps:{} };
     const hasG = Object.entries(e.checks||{}).some(([k,v]) => k.includes('-grayson-') && v);
+    const lapKey = s.dayKey+'-'+s.sessId+'-grayson';
+    const hasGLaps = e.laps && e.laps[lapKey] > 0;
+    let dirty = false;
     if (!hasG) {
       for (let i = 0; i < s.nBlocks; i++) e.checks[s.dayKey+'-'+s.sessId+'-grayson-'+i] = true;
-      e.laps = e.laps||{}; e.laps[s.dayKey+'-'+s.sessId+'-grayson'] = 8;
-      history[s.date] = e;
-      changed = true;
+      dirty = true;
     }
+    if (!hasGLaps) {
+      e.laps = e.laps||{}; e.laps[lapKey] = 8;
+      dirty = true;
+    }
+    if (dirty) { history[s.date] = e; changed = true; }
   }
 
   // Devin — 5 track sessions (Tue/Thu/Sat starting June 2)
